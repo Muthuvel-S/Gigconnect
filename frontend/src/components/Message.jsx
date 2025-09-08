@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import jwtDecode from "jwt-decode";
+import * as jwtDecode from "jwt-decode"; // ✅ Fixed import for Vite
 
 // Socket.IO URL based on environment
 const SOCKET_URL =
@@ -20,7 +20,6 @@ const Message = () => {
   const { gigId, recipientId } = useParams();
   const token = localStorage.getItem("token");
 
-  // Scroll to bottom helper
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -32,7 +31,7 @@ const Message = () => {
     }
 
     try {
-      const decodedToken = jwtDecode(token);
+      const decodedToken = jwtDecode(token); // ✅ Now works with Vite
       setCurrentUserId(decodedToken.user.id);
     } catch (error) {
       console.error("Failed to decode token:", error);
@@ -40,7 +39,6 @@ const Message = () => {
       return;
     }
 
-    // Fetch messages
     const fetchMessages = async () => {
       try {
         const response = await axios.get(
@@ -56,15 +54,12 @@ const Message = () => {
     };
     fetchMessages();
 
-    // Join Socket.IO chat room
     socket.emit("join_gig_chat", gigId);
 
-    // Listen for incoming messages
     socket.on("receive_message", (message) => {
       setMessages((prev) => [...prev, message]);
     });
 
-    // Cleanup
     return () => {
       socket.off("receive_message");
     };
