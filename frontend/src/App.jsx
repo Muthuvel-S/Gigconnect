@@ -23,6 +23,9 @@ import Footer from "./components/Footer"; // Import Footer
 function App() {
   const role = localStorage.getItem("role");
 
+  // 🔹 Debug: check which API URL frontend is using
+  console.log("Using API:", import.meta.env.VITE_API_URL);
+
   const renderDashboard = () => {
     switch (role) {
       case "admin":
