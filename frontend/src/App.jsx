@@ -18,8 +18,7 @@ import GigProposals from "./components/GigProposals";
 import ReviewForm from "./components/ReviewForm";
 import AdminDashboard from "./components/AdminDashboard";
 import Checkout from "./components/Checkout";
-
-
+import Footer from "./components/Footer"; // Import Footer
 
 function App() {
   const role = localStorage.getItem("role");
@@ -68,7 +67,6 @@ function App() {
             path="/dashboard"
             element={<PrivateRoute>{renderDashboard()}</PrivateRoute>}
           />
-         
           <Route
             path="/profile"
             element={
@@ -126,6 +124,9 @@ function App() {
             }
           />
         </Routes>
+
+        {/* Footer */}
+        <Footer />
       </BrowserRouter>
     </div>
   );
