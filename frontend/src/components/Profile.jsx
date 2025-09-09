@@ -243,13 +243,10 @@ const Profile = () => {
                   onChange={(e) => setProjectData({ ...projectData, description: e.target.value })}
                   required
                 />
-                <div className="upload-container">
-                  <button type="button" onClick={() => projectImageRef.current.click()}>Upload Project Image</button>
-                  <input type="file" ref={projectImageRef} onChange={(e) => handleImageUpload(e.target.files[0], "project")} />
-                </div>
+                
                 <input
                   type="text"
-                  placeholder="Your Portfolio Link"
+                  placeholder="Your Project Link"
                   value={projectData.portfolioLink}
                   onChange={(e) => setProjectData({ ...projectData, portfolioLink: e.target.value })}
                 />

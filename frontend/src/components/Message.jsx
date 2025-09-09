@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import * as jwtDecode from "jwt-decode"; // ✅ Fixed import for Vite
+import { jwtDecode } from "jwt-decode"; // ✅ Correct import
 
 // Socket.IO URL based on environment
 const SOCKET_URL =
@@ -31,7 +31,7 @@ const Message = () => {
     }
 
     try {
-      const decodedToken = jwtDecode(token); // ✅ Now works with Vite
+      const decodedToken = jwtDecode(token); // ✅ Now works
       setCurrentUserId(decodedToken.user.id);
     } catch (error) {
       console.error("Failed to decode token:", error);

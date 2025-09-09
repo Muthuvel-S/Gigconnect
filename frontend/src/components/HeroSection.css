@@ -1,12 +1,17 @@
-/* Hero Section */
+/* =========================
+   HERO SECTION
+========================= */
 .hero {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 90vh;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: #000;
 }
 
-/* Video Background */
+/* Video Background - clean & sharp */
 .hero-video {
   position: absolute;
   top: 0;
@@ -15,20 +20,26 @@
   height: 100%;
   object-fit: cover;
   z-index: 0;
+  filter: brightness(0.8) contrast(1.05);
 }
 
-/* Dark overlay */
+/* Overlay */
 .hero-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.75) 20%,
+      rgba(0, 0, 0, 0.3) 80%
+    ),
+    linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
   z-index: 1;
 }
 
-/* Hero Content wrapper */
+/* Content Wrapper */
 .hero-content-wrapper {
   position: relative;
   z-index: 2;
@@ -37,149 +48,250 @@
   justify-content: center;
   align-items: flex-start;
   height: 100%;
-  max-width: 1350px;
- padding-bottom: 100px;
- margin-left: 70px;
-
+  max-width: 1250px;
+  margin-left: 70px;
+  padding-bottom: 80px;
   color: #fff;
-  
+  animation: fadeInUp 1s ease forwards;
 }
 
-/* Hero Text */
+/* Headline */
 .hero-content h1 {
-  font-size: 5rem;
+  font-size: 4.8rem;
   font-weight: 900;
+  background: linear-gradient(135deg, #fff, #ddd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
   margin-bottom: 20px;
-  line-height: 1.2;
 }
 
+/* Subtitle */
 .hero-content p {
-  font-size: 1.2rem;
-  font-weight: 500;
-  margin-bottom: 30px;
-  max-width: 550px;
+  font-size: 1.25rem;
+  font-weight: 400;
+  margin-bottom: 40px;
+  max-width: 600px;
+  color: #eaeaea;
+  line-height: 1.6;
 }
 
-/* Links */
+/* Links container */
 .hero-links {
   display: flex;
   gap: 20px;
 }
 
+/* Buttons */
 .hire-link,
 .work-link {
   text-decoration: none;
-  padding: 14px 35px;
+  padding: 14px 38px;
   font-size: 1rem;
   font-weight: 600;
-  border-radius: 10px;
-  transition: 0.3s;
+  border-radius: 14px;
+  transition: all 0.35s ease;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
 }
 
+/* Primary button */
 .hire-link {
-  background: #ffcc00;
+  background: linear-gradient(135deg, #ffcc00, #ff9900);
   color: #111;
 }
 .hire-link:hover {
-  background: #fff;
-  color: #000;
+  background: linear-gradient(135deg, #7d7c78, #615e55);
+  transform: translateY(-3px) scale(1.03);
+  color: black;
 }
 
+/* Secondary button */
 .work-link {
-  background: #fff;
-  color: #111;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
 }
 .work-link:hover {
-  background-color: #ffcc00;
-  color: #000;
+  background: rgba(255, 255, 255, 0.25);
+  color: #fdfdfc;
+  transform: translateY(-3px) scale(1.03);
 }
 
-/* How It Works Section */
+/* Floating animation */
+.hire-link,
+.work-link {
+  animation: floatPulse 2s ease-in-out infinite;
+}
+
+@keyframes floatPulse {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* Hero Stats */
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  margin-top: 30px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #f1f1f1;
+}
+.hero-stats div strong {
+  display: block;
+  font-size: 1.4rem;
+  color: #ffcc00;
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  font-size: 1.5rem;
+  animation: bounce 2s infinite;
+  z-index: 3;
+}
+@keyframes bounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -10px); }
+}
+
+/* =========================
+   HOW IT WORKS SECTION
+========================= */
 .how-it-works {
-  background-color: #f0f0f0;
+  background: #fafafa;
   text-align: center;
-  padding: 80px 20px;
+  padding: 100px 20px;
 }
 
 .how-it-works h2 {
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: 2.8rem;
+  font-weight: 800;
   color: #111;
-  margin-bottom: 50px;
+  margin-bottom: 60px;
+  position: relative;
 }
 
+.how-it-works h2::after {
+  content: "";
+  display: block;
+  width: 70px;
+  height: 4px;
+  background: #ffcc00;
+  margin: 15px auto 0 auto;
+  border-radius: 2px;
+}
+
+/* Steps Layout */
 .steps-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 30px;
+  gap: 35px;
 }
 
+/* Step Card */
 .step-card {
-  background-color: #fff;
-  border-radius: 15px;
-  padding: 40px 20px 20px 20px;
-  width: 250px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 20px;
+  padding: 80px 28px 35px;
+  width: 300px;
+  height: 250px;
+  backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  transition: all 0.25s ease;
   position: relative;
+  overflow: hidden;
 }
 
 .step-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+  transform: translateY(-12px) scale(1.03);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.25);
 }
 
+/* Step Number with glow */
 .step-number {
-  width: 50px;
-  height: 50px;
-  background-color: #595b59;
-  color: #fff;
-  font-weight: 700;
-  font-size: 1.5rem;
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #ffcc00, #ff9900);
+  color: #111;
+  font-weight: 800;
+  font-size: 1.6rem;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: -60px auto 20px auto;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  margin: -70px auto 20px auto;
+  box-shadow: 0 0 18px rgba(255, 204, 0, 0.6),
+              0 6px 15px rgba(0,0,0,0.25);
 }
 
+/* Step Text */
 .step-card h3 {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   margin-bottom: 15px;
   color: #111;
+  font-weight: 700;
 }
 
 .step-card p {
   font-size: 1rem;
-  color: #333;
-  line-height: 1.5;
+  color: #444;
+  line-height: 1.6;
 }
 
-.how-freelancer {
-  background-color: #f0f0f0;
+/* =========================
+   ANIMATIONS
+========================= */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Responsive */
+/* =========================
+   RESPONSIVE
+========================= */
 @media (max-width: 992px) {
   .hero-content-wrapper {
     align-items: center;
     text-align: center;
+    margin-left: 0;
+    padding: 0 20px;
   }
 
   .hero-content h1 {
-    font-size: 3rem;
+    font-size: 3.2rem;
   }
 
   .hero-content p {
     font-size: 1.1rem;
   }
+
+  .hero-stats {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
 }
 
 @media (max-width: 576px) {
   .hero-content h1 {
-    font-size: 2.2rem;
+    font-size: 2.4rem;
   }
 
   .hero-content p {
@@ -188,7 +300,194 @@
 
   .hire-link,
   .work-link {
-    padding: 10px 25px;
+    padding: 12px 28px;
     font-size: 0.9rem;
   }
+}
+/* =========================
+   TRUSTED BY SECTION
+========================= */
+.trusted-by {
+  background: #fff;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.trusted-by h2 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #111;
+}
+
+.logo-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+}
+
+.logo-row img {
+  height: 50px;
+  object-fit: contain;
+  filter: grayscale(100%);
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.logo-row img:hover {
+  filter: grayscale(0%);
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* =========================
+   CATEGORIES SECTION
+========================= */
+.categories {
+  background: #fafafa;
+  padding: 100px 20px;
+  text-align: center;
+}
+
+.categories h2 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 50px;
+  color: #111;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 25px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.category-card {
+  background: #fff;
+  padding: 30px 20px;
+  border-radius: 14px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.category-card:hover {
+  background: linear-gradient(135deg, #ffcc00, #ff9900);
+  color: #111;
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+/* =========================
+   TESTIMONIALS SECTION
+========================= */
+.testimonials {
+  background: #fff;
+  padding: 100px 20px;
+  text-align: center;
+}
+
+.testimonials h2 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 50px;
+  color: #111;
+}
+
+.testimonial-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.testimonial {
+  background: #fafafa;
+  padding: 30px 25px;
+  border-radius: 14px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.testimonial:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+.testimonial p {
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.testimonial h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111;
+}
+
+/* =========================
+   CTA SECTION
+========================= */
+.cta-section {
+  
+  padding: 100px 20px;
+  text-align: center;
+  color: #111;
+}
+
+.cta-section h2 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.cta-section p {
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+  color: #333;
+}
+
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.cta-buttons .hire-link,
+.cta-buttons .work-link {
+  padding: 14px 35px;
+  font-size: 1rem;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+/* Override buttons for CTA */
+.cta-buttons .hire-link {
+  background: #111;
+  color: #fff;
+}
+.cta-buttons .hire-link:hover {
+  background: #333;
+}
+
+.cta-buttons .work-link {
+  background: #fff;
+  color: #111;
+}
+.cta-buttons .work-link:hover {
+  background: #f1f1f1;
 }

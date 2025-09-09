@@ -3,58 +3,56 @@
 /* Main Container */
 .checkout-container {
   max-width: 500px;
-  margin: 50px auto;
-  padding: 30px;
-  background: linear-gradient(145deg, #f5f7fa, #e4e9f0);
-  border-radius: 15px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  margin: 60px auto;
+  padding: 35px 30px;
+  background: #f9fafc;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
   font-family: 'Poppins', sans-serif;
-  transition: all 0.3s ease;
-}
-
-.checkout-container:hover {
-  transform: translateY(-3px);
+  transition: none;
 }
 
 /* Header */
 .checkout-header {
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
 }
 
 .checkout-header h2 {
-  font-size: 26px;
-  font-weight: 600;
-  color: #333;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2937;
 }
 
 .checkout-header p {
-  font-size: 14px;
-  color: #777;
-  margin-top: 5px;
+  font-size: 15px;
+  color: #6b7280;
+  margin-top: 6px;
 }
 
 /* Details Card */
 .checkout-details {
   background-color: #ffffff;
-  padding: 25px;
-  border-radius: 12px;
-  border: 1px solid #ddd;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-  margin-bottom: 30px;
+  padding: 28px 25px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+  margin-bottom: 35px;
+  transition: none;
 }
 
 .checkout-details p {
   margin: 12px 0;
   font-size: 16px;
-  color: #555;
+  color: #4b5563;
+  line-height: 1.6;
 }
 
 .checkout-details h3 {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
   margin-top: 15px;
-  color: #222;
+  color: #111827;
   text-align: center;
 }
 
@@ -62,29 +60,34 @@
 .payment-button {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(90deg, #556ee6, #34c38f);
-  color: white;
+  background: linear-gradient(90deg, #4f46e5, #10b981);
+  color: #ffffff;
   font-size: 18px;
   font-weight: 600;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-
-.payment-button:hover {
-  background: linear-gradient(90deg, #34c38f, #556ee6);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transition: none;
 }
 
 /* Loading & Error */
 .loading,
 .error {
   text-align: center;
-  margin-top: 60px;
+  margin-top: 50px;
   font-size: 18px;
   font-weight: 500;
-  color: #ff4d4f;
+  color: #ef4444;
+}
+
+/* Optional: Smooth fade-in animation */
+.fade-in {
+  opacity: 0;
+  transform: translateY(15px);
+  animation: fadeInUp 0.6s forwards;
+}
+
+@keyframes fadeInUp {
+  to { opacity: 1; transform: translateY(0); }
 }
