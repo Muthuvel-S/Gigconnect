@@ -8,8 +8,14 @@ const userSchema = new mongoose.Schema({
   profilePicture: { type: String, default: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' },
   skills: { type: [String], default: [] },
   description: { type: String, default: '' },
-  portfolio: { type: [{ title: String, description: String, link: String }], default: [] },
-  upiId: { type: String, default: '' }, // New field for UPI ID
+  portfolio: { type: [{
+    title: String,
+    description: String,
+    images: [String], // Store project image URLs
+    link: String
+  }], default: [] },
+  upiId: { type: String, default: '' },
 });
+
 const User = mongoose.model('User', userSchema);
 module.exports = User;

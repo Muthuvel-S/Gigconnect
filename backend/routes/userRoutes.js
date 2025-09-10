@@ -64,7 +64,7 @@ router.get('/dashboard', auth, async (req, res) => {
 // ------------------- GET OWN PROFILE -------------------
 router.get('/profile', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-__v');
+    const user = await User.findById(req.user.id).select('-__v -upiId'); // hide UPI
     if (!user) return res.status(404).json({ message: 'User not found.' });
     res.json(user);
   } catch (err) {
@@ -82,34 +82,35 @@ router.put('/profile', auth, async (req, res) => {
 
     // Update freelancer-specific fields
     if (user.role === 'freelancer') {
-      user.skills = skills || [];
-      user.description = description || '';
-      user.portfolio = portfolio || [];
-      user.upiId = upiId || '';
+      if (skills) user.skills = skills;
+      if (description) user.description = description;
+      if (portfolio) user.portfolio = portfolio;
+      if (upiId) user.upiId = upiId; // stored but hidden in response
     }
 
     // Update common fields
-    user.username = username || user.username;
-    user.email = email || user.email;
-    user.profilePicture = profilePicture || user.profilePicture;
+    if (username) user.username = username;
+    if (email) user.email = email;
+    if (profilePicture) user.profilePicture = profilePicture;
 
     await user.save();
-    res.json(user);
+
+    // Remove UPI ID from response
+    const userResponse = user.toObject();
+    delete userResponse.upiId;
+
+    res.json(userResponse);
   } catch (err) {
     console.error('Profile Update Error:', err.message);
     res.status(500).send('Server Error updating profile.');
   }
 });
 
-// ------------------- GET USER BY ID (for viewing other profiles) -------------------
-// @route   GET /profile/:id
-// @desc    Get a specific user's profile by ID
+// ------------------- GET USER BY ID -------------------
 router.get('/profile/:id', async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
-    }
+    const user = await User.findById(req.params.id).select('-__v -upiId'); // hide UPI
+    if (!user) return res.status(404).json({ message: 'User not found.' });
     res.json(user);
   } catch (err) {
     console.error('Profile Data Error:', err.message);

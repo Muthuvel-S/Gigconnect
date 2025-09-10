@@ -11,28 +11,26 @@ const httpServer = createServer(app);
 
 // Allowed frontend URLs
 const allowedOrigins = [
-  "http://localhost:5173",                     // local dev
+  "http://localhost:5173", // local dev
   "https://your-vercel-frontend-url.vercel.app" // deployed frontend
 ];
 
-// Express CORS middleware
+// Middleware
 app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin) return callback(null, true); // allow non-browser requests
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      } else {
-        return callback(new Error("CORS not allowed"));
-      }
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error("CORS not allowed"));
     },
     credentials: true,
   })
 );
-
 app.use(express.json());
+app.use('/api/notifications', require('./routes/notificationRoutes'));
 
-// Socket.IO with dynamic CORS
+
+// Socket.IO setup
 const io = new Server(httpServer, {
   cors: {
     origin: allowedOrigins,
@@ -41,7 +39,52 @@ const io = new Server(httpServer, {
   },
 });
 
-const port = process.env.PORT || 5000;
+// Online users map
+let onlineUsers = {};
+
+// Socket.IO events
+io.on("connection", (socket) => {
+  console.log(`User connected: ${socket.id}`);
+
+  // Track online user
+  socket.on("userOnline", (userId) => {
+    onlineUsers[userId] = socket.id;
+  });
+
+  // Join gig chat room
+  socket.on("join_gig_chat", (gigId) => {
+    socket.join(gigId);
+    console.log(`User ${socket.id} joined gig chat: ${gigId}`);
+  });
+
+  // Send message in gig chat
+  socket.on("send_message", async (data) => {
+    const { sender, recipient, gig, content } = data;
+    const newMessage = new Message({ sender, recipient, gig, content });
+    await newMessage.save();
+    io.to(gig).emit("receive_message", newMessage);
+  });
+
+  // Real-time notification emitter
+  socket.on("send_notification", ({ userId, message }) => {
+    const socketId = onlineUsers[userId];
+    if (socketId) {
+      io.to(socketId).emit("newNotification", message);
+    }
+  });
+
+  socket.on("disconnect", () => {
+    // Remove user from online map
+    for (const [userId, id] of Object.entries(onlineUsers)) {
+      if (id === socket.id) delete onlineUsers[userId];
+    }
+    console.log(`User disconnected: ${socket.id}`);
+  });
+});
+
+// Helper to emit notifications from routes
+app.set("io", io);
+app.set("onlineUsers", onlineUsers);
 
 // MongoDB connection
 mongoose
@@ -57,31 +100,13 @@ app.use("/api/upload", require("./routes/uploadRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/payment", require("./routes/paymentRoutes"));
 
-// Socket.IO events
-io.on("connection", (socket) => {
-  console.log(`User connected: ${socket.id}`);
-
-  socket.on("join_gig_chat", (gigId) => {
-    socket.join(gigId);
-    console.log(`User ${socket.id} joined gig chat: ${gigId}`);
-  });
-
-  socket.on("send_message", async (data) => {
-    const { sender, recipient, gig, content } = data;
-    const newMessage = new Message({ sender, recipient, gig, content });
-    await newMessage.save();
-    io.to(gig).emit("receive_message", newMessage);
-  });
-
-  socket.on("disconnect", () => {
-    console.log(`User disconnected: ${socket.id}`);
-  });
-});
-
+// Root route
 app.get("/", (req, res) => {
   res.send("Hello from the GigConnect Backend!");
 });
 
+// Start server
+const port = process.env.PORT || 5000;
 httpServer.listen(port, () => {
   console.log(`Backend server listening at http://localhost:${port}`);
 });

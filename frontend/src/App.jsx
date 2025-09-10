@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Homepage from "./components/Homepage";
 import Register from "./components/Register";
@@ -20,11 +20,9 @@ import AdminDashboard from "./components/AdminDashboard";
 import Checkout from "./components/Checkout";
 import Footer from "./components/Footer"; // Import Footer
 
-function App() {
+function AppContent() {
   const role = localStorage.getItem("role");
-
-  // 🔹 Debug: check which API URL frontend is using
-  console.log("Using API:", import.meta.env.VITE_API_URL);
+  const location = useLocation(); // Get current route
 
   const renderDashboard = () => {
     switch (role) {
@@ -38,100 +36,40 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Homepage />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/verify-message" element={<VerificationMessage />} />
-          <Route path="/browse-gigs" element={<BrowseGigs />} />
-          <Route path="/gig/:id" element={<GigDetails />} />
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/verify-message" element={<VerificationMessage />} />
+        <Route path="/browse-gigs" element={<BrowseGigs />} />
+        <Route path="/gig/:id" element={<GigDetails />} />
 
-          {/* Protected Routes */}
-          <Route
-            path="/message/:gigId/:recipientId"
-            element={
-              <PrivateRoute>
-                <Message />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/gig/:id/review"
-            element={
-              <PrivateRoute>
-                <ReviewForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={<PrivateRoute>{renderDashboard()}</PrivateRoute>}
-          />
-          <Route
-            path="/profile"
-            element={
-              <PrivateRoute>
-                <Profile />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/profile/:id"
-            element={
-              <PrivateRoute>
-                <Profile />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/post-gig"
-            element={
-              <PrivateRoute>
-                <GigPosting />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/my-gigs"
-            element={
-              <PrivateRoute>
-                <MyGigs />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/applied-gigs"
-            element={
-              <PrivateRoute>
-                <AppliedGigs />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/gig-proposals/:id"
-            element={
-              <PrivateRoute>
-                <GigProposals />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/checkout/:id"
-            element={
-              <PrivateRoute>
-                <Checkout />
-              </PrivateRoute>
-            }
-          />
-        </Routes>
+        {/* Protected Routes */}
+        <Route path="/message/:gigId/:recipientId" element={<PrivateRoute><Message /></PrivateRoute>} />
+        <Route path="/gig/:id/review" element={<PrivateRoute><ReviewForm /></PrivateRoute>} />
+        <Route path="/dashboard" element={<PrivateRoute>{renderDashboard()}</PrivateRoute>} />
+        <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+        <Route path="/profile/:id" element={<PrivateRoute><Profile /></PrivateRoute>} />
+        <Route path="/post-gig" element={<PrivateRoute><GigPosting /></PrivateRoute>} />
+        <Route path="/my-gigs" element={<PrivateRoute><MyGigs /></PrivateRoute>} />
+        <Route path="/applied-gigs" element={<PrivateRoute><AppliedGigs /></PrivateRoute>} />
+        <Route path="/gig-proposals/:id" element={<PrivateRoute><GigProposals /></PrivateRoute>} />
+        <Route path="/checkout/:id" element={<PrivateRoute><Checkout /></PrivateRoute>} />
+      </Routes>
 
-        {/* Footer */}
-        <Footer />
-      </BrowserRouter>
-    </div>
+      {/* Render Footer only on Homepage */}
+      {location.pathname === "/" && <Footer />}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   );
 }
 

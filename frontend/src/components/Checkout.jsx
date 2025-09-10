@@ -14,6 +14,7 @@ const Checkout = () => {
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
   const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
   const token = localStorage.getItem('token');
+  const role = localStorage.getItem('role');
 
   useEffect(() => {
     const fetchCheckoutDetails = async () => {
@@ -38,9 +39,11 @@ const Checkout = () => {
       script.src = 'https://checkout.razorpay.com/v1/checkout.js';
       document.body.appendChild(script);
 
-      const { data: { id: order_id, amount, currency } } = await axios.post(`${API_URL}/payment/order`, { gigId: id }, {
-        headers: { 'x-auth-token': token },
-      });
+      const { data: { id: order_id, amount, currency } } = await axios.post(
+        `${API_URL}/payment/order`,
+        { gigId: id },
+        { headers: { 'x-auth-token': token } }
+      );
 
       const options = {
         key: RAZORPAY_KEY_ID,
@@ -50,12 +53,16 @@ const Checkout = () => {
         description: 'Payment for Gig',
         order_id,
         handler: async function (response) {
-          await axios.post(`${API_URL}/payment/verify`, {
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature: response.razorpay_signature,
-            gigId: id,
-          }, { headers: { 'x-auth-token': token } });
+          await axios.post(
+            `${API_URL}/payment/verify`,
+            {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              gigId: id,
+            },
+            { headers: { 'x-auth-token': token } }
+          );
           alert('Payment was successful!');
           navigate('/my-gigs');
         },
@@ -68,12 +75,16 @@ const Checkout = () => {
 
     } catch (err) {
       console.error('Payment Error:', err?.response?.data || err);
-      alert('Payment failed.');
+      alert(err?.response?.data?.message || 'Payment failed.');
     }
   };
 
   if (isLoading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
+
+  const gigStatus = checkoutData?.gigDetails?.status?.toLowerCase();
+  const isClient = role === 'client';
+  const isPaymentAllowed = gigStatus === 'completed' && isClient;
 
   return (
     <div className="checkout-container">
@@ -86,12 +97,20 @@ const Checkout = () => {
         <p><strong>Freelancer:</strong> {checkoutData?.freelancerName || 'N/A'}</p>
         <p><strong>Client's Budget:</strong> ₹{checkoutData?.gigDetails?.budget || 0}</p>
         <p><strong>Freelancer's Bid:</strong> ₹{checkoutData?.bidAmount || 0}</p>
-        <h3>Final  Amount: ₹{checkoutData?.bidAmount || 0}</h3>
+        <h3>Final Amount: ₹{checkoutData?.bidAmount || 0}</h3>
       </div>
 
-      <button className="payment-button" onClick={handlePayment}>
-        Proceed to Payment
-      </button>
+      {isPaymentAllowed ? (
+        <button className="payment-button" onClick={handlePayment}>
+          Proceed to Payment
+        </button>
+      ) : (
+        <p className="info-text">
+          {gigStatus === 'completed'
+            ? 'Only the client can proceed with the payment.'
+            : 'Payment not available yet.'}
+        </p>
+      )}
     </div>
   );
 };

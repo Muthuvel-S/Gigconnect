@@ -96,3 +96,71 @@
     padding: 0;
   }
 }
+
+
+.notification-container {
+  position: relative;
+  margin-left: 700px;
+  padding-top: 8px;
+}
+
+.bell-icon {
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: #333;
+}
+
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: red;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  text-align: center;
+  min-width: 18px;
+  line-height: 1.2;
+}
+
+/* Dropdown styling */
+.notification-dropdown {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  width: 250px;
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 100;
+}
+
+.notification-item {
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.notification-item.unread {
+  font-weight: bold;
+  background-color: #f9f9f9;
+}
+
+.notification-item:hover {
+  background-color: #f1f1f1;
+}
+
+.no-notifications {
+  padding: 0.5rem;
+  text-align: center;
+  color: #777;
+  font-size: 0.9rem;
+}
+

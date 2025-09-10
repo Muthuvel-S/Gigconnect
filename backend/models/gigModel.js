@@ -11,7 +11,9 @@ const gigSchema = new mongoose.Schema({
   hiredFreelancer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   status: { type: String, enum: ['open', 'in progress', 'completed', 'paid'], default: 'open' },
   finalAmount: { type: Number, default: null },
+  payoutProcessed: { type: Boolean, default: false }, // <--- new field
   postedAt: { type: Date, default: Date.now },
 });
+
 const Gig = mongoose.model('Gig', gigSchema);
 module.exports = Gig;
