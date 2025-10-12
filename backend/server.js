@@ -12,9 +12,10 @@ const httpServer = createServer(app);
 // ===================================================================
 // THIS IS THE CORRECTED PART
 // ===================================================================
+// This array now contains the exact, correct URL for your Vercel site.
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://gigconnect-seven.vercel.app" // Your actual Vercel URL
+  "https://gigconnect-seven.vercel.app" // CORRECT URL
 ];
 // ===================================================================
 
@@ -49,36 +50,21 @@ let onlineUsers = {};
 // Socket.IO events
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
-
-  // Track online user
-  socket.on("userOnline", (userId) => {
-    onlineUsers[userId] = socket.id;
-  });
-
-  // Join gig chat room
-  socket.on("join_gig_chat", (gigId) => {
-    socket.join(gigId);
-    console.log(`User ${socket.id} joined gig chat: ${gigId}`);
-  });
-
-  // Send message in gig chat
+  socket.on("userOnline", (userId) => { onlineUsers[userId] = socket.id; });
+  socket.on("join_gig_chat", (gigId) => { socket.join(gigId); });
   socket.on("send_message", async (data) => {
     const { sender, recipient, gig, content } = data;
     const newMessage = new Message({ sender, recipient, gig, content });
     await newMessage.save();
     io.to(gig).emit("receive_message", newMessage);
   });
-
-  // Real-time notification emitter
   socket.on("send_notification", ({ userId, message }) => {
     const socketId = onlineUsers[userId];
     if (socketId) {
       io.to(socketId).emit("newNotification", message);
     }
   });
-
   socket.on("disconnect", () => {
-    // Remove user from online map
     for (const [userId, id] of Object.entries(onlineUsers)) {
       if (id === socket.id) delete onlineUsers[userId];
     }
