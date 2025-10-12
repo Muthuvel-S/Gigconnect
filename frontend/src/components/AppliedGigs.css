@@ -149,20 +149,19 @@
   text-transform: capitalize;
 }
 
-.status-badge.status-pending {
-  background-color: #fff6e6;
-  color: #b45309;
+.status-badge .fa-spin {
+  animation: fa-spin 2s infinite linear;
 }
 
-.status-badge.status-accepted {
-  background-color: #e6f7f0;
-  color: #0d6e3a;
-}
+/* Application Statuses */
+.status-badge.status-pending { background-color: #fffbeb; color: #b45309; }
+.status-badge.status-accepted { background-color: #e6f7f0; color: #0d6e3a; }
+.status-badge.status-rejected { background-color: #fde2e4; color: #9b2226; }
 
-.status-badge.status-rejected {
-  background-color: #fde2e4;
-  color: #9b2226;
-}
+/* Gig Statuses (for after acceptance) */
+.status-badge.status-in-progress { background-color: #fffbeb; color: #b45309; }
+.status-badge.status-completed { background-color: #e6f7f0; color: #0d6e3a; }
+.status-badge.status-paid { background-color: #f3e8ff; color: #581c87; }
 
 
 /* === ACTION BUTTON === */
@@ -203,17 +202,4 @@
     text-align: left;
     margin-top: 0.5rem;
   }
-  
-  /* Add labels for context */
-  .table-row > div:before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: #6c757d;
-    margin-right: 1rem;
-    display: inline-block;
-  }
-
-  .bid-amount:before { content: 'Your Bid: '; }
-  .status-cell:before { content: 'Status: '; }
-  .gig-info:before, .action-cell:before { content: ''; }
 }

@@ -9,26 +9,30 @@ const Message = require("./models/messageModel");
 const app = express();
 const httpServer = createServer(app);
 
-// Allowed frontend URLs
+// ===================================================================
+// THIS IS THE CORRECTED PART
+// ===================================================================
 const allowedOrigins = [
-  "http://localhost:5173", // local dev
-  "https://your-vercel-frontend-url.vercel.app" // deployed frontend
+  "http://localhost:5173",
+  "https://gigconnect-seven.vercel.app" // Your actual Vercel URL
 ];
+// ===================================================================
 
 // Middleware
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow non-browser requests
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error("CORS not allowed"));
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
     },
     credentials: true,
   })
 );
 app.use(express.json());
 app.use('/api/notifications', require('./routes/notificationRoutes'));
-
 
 // Socket.IO setup
 const io = new Server(httpServer, {
