@@ -1,134 +1,117 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
+import { FaBriefcase, FaUserPlus, FaLightbulb, FaCheckCircle, FaHandshake, FaCode, FaPaintBrush, FaPenNib, FaChartLine, FaMobileAlt, FaBullhorn } from "react-icons/fa";
 import "./HeroSection.css";
-import heroVideo from "../assets/gigconnect.mp4"; // your video
+import heroVideo from "../assets/gigconnect.mp4"; // Ensure your video is imported
+
+// Data for sections
+const clientSteps = [
+  { icon: <FaLightbulb />, title: "Post Your Gig", description: "Detail your project needs, timeline, and budget. Our platform makes it easy to attract the right talent." },
+  { icon: <FaHandshake />, title: "Collaborate & Pay Securely", description: "Use our tools to collaborate effectively and only release payment when the work is approved." },
+  { icon: <FaUserPlus />, title: "Find Top Talent", description: "Browse profiles, review portfolios, and compare proposals to find the perfect match for your project." },
+];
+const freelancerSteps = [
+  { icon: <FaUserPlus />, title: "Create Your Profile", description: "Build a stunning profile that showcases your skills, experience, and unique portfolio to stand out." },
+  { icon: <FaBriefcase />, title: "Find Fulfilling Work", description: "Search for projects that align with your passions and expertise. Submit compelling proposals to win jobs." },
+  { icon: <FaCheckCircle />, title: "Deliver Great Work & Get Paid", description: "Manage your projects, communicate with clients, and enjoy secure, timely payments for your efforts." },
+];
+const categories = [
+  { icon: <FaCode />, name: "Web Development" },
+  { icon: <FaPaintBrush />, name: "Graphic Design" },
+  { icon: <FaPenNib />, name: "Content Writing" },
+  { icon: <FaChartLine />, name: "Data & Analytics" },
+  { icon: <FaMobileAlt />, name: "Mobile Apps" },
+  { icon: <FaBullhorn />, name: "Digital Marketing" },
+];
+const testimonials = [
+    { quote: "GigConnect revolutionized how we hire talent. We found an incredible developer in just two days!", name: "Aarav Patel", role: "Startup Founder, FinTech Co." },
+    { quote: "As a freelance designer, this is the best platform I've used. The quality of clients is top-notch and payments are always secure.", name: "Priya Singh", role: "UI/UX Designer" },
+    { quote: "The collaboration tools made managing a complex project across timezones incredibly simple. Highly recommended!", name: "John Davis", role: "Project Manager, Tech Corp." },
+];
 
 const HeroSection = () => {
+  const [activeTab, setActiveTab] = useState("client");
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsVideoLoaded(true);
+  }, []);
+
   return (
-    <>
+    <div className="landing-page">
       {/* ================= HERO SECTION ================= */}
       <section className="hero">
-        {/* Video Background */}
-        <video className="hero-video" autoPlay loop muted playsInline>
-          <source src={heroVideo} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-
-        {/* Overlay */}
+        {isVideoLoaded && (
+          <video className="hero-video" autoPlay loop muted playsInline>
+            <source src={heroVideo} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        )}
         <div className="hero-overlay"></div>
-
-        {/* Hero Content */}
-        <div className="hero-content-wrapper">
-          <div className="hero-content">
-            <h1>
-              Find & Hire Expert <br /> Freelancers
-            </h1>
-            <p>
-              Work with the best freelance talent from around the world on our
-              secure, flexible, and cost-effective platform.
-            </p>
-
-            <div className="hero-links">
-              <Link to="/login" className="hire-link">
-                I want to Hire
-              </Link>
-              <Link to="/register" className="work-link">
-                I want to Work
-              </Link>
-            </div>
+        <div className="hero-content">
+          <h1>
+            Connect with the Perfect Talent to
+            <br />
+            Bring Your <span className="rotating-text">Vision</span> to Life
+          </h1>
+          <p className="hero-subtitle">
+            The ultimate marketplace to hire expert freelancers for any project, or to find work that inspires you.
+          </p>
+          <div className="hero-actions">
+            <Link to="/register" className="hero-button primary">
+              I Want to Hire
+            </Link>
+            <Link to="/register?role=freelancer" className="hero-button secondary">
+              I Want to Work
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ================= HOW IT WORKS - CLIENTS ================= */}
-      <section className="how-it-works">
-        <h2>How It Works</h2>
-        <h2>Clients</h2>
+      {/* ================= HOW IT WORKS SECTION ================= */}
+      <section className="section how-it-works">
+        <h2 className="section-title">Simple Steps to Success</h2>
+        <div className="tab-buttons">
+          <button className={`tab-button ${activeTab === "client" ? "active" : ""}`} onClick={() => setActiveTab("client")}>For Clients</button>
+          <button className={`tab-button ${activeTab === "freelancer" ? "active" : ""}`} onClick={() => setActiveTab("freelancer")}>For Freelancers</button>
+        </div>
         <div className="steps-container">
-          <div className="step-card">
-            <div className="step-number">1</div>
-            <h3>Post a Gig</h3>
-            <p>Describe your project, budget, and deadlines to attract talent.</p>
-          </div>
-          <div className="step-card">
-            <div className="step-number">2</div>
-            <h3>Browse Freelancers</h3>
-            <p>Review profiles, portfolios, and ratings to find the best fit.</p>
-          </div>
-          <div className="step-card">
-            <div className="step-number">3</div>
-            <h3>Hire & Collaborate</h3>
-            <p>Work securely, track progress, and pay after project completion.</p>
-          </div>
+          {(activeTab === "client" ? clientSteps : freelancerSteps).map((step, index) => (
+            <div className="step-card" key={index}><div className="step-icon">{step.icon}</div><h3>{step.title}</h3><p>{step.description}</p></div>
+          ))}
         </div>
       </section>
 
-      {/* ================= HOW IT WORKS - FREELANCERS ================= */}
-      <section className="how-it-works how-freelancer">
-        <h2>Freelancers</h2>
-        <div className="steps-container">
-          <div className="step-card">
-            <div className="step-number">1</div>
-            <h3>Create Profile</h3>
-            <p>Showcase your skills, experience, and portfolio to clients.</p>
-          </div>
-          <div className="step-card">
-            <div className="step-number">2</div>
-            <h3>Apply for Gigs</h3>
-            <p>Find projects that match your skills and submit proposals.</p>
-          </div>
-          <div className="step-card">
-            <div className="step-number">3</div>
-            <h3>Get Hired & Earn</h3>
-            <p>Collaborate on projects, deliver quality work, and get paid safely.</p>
-          </div>
-        </div>
-      </section>
-
-      
-
-      {/* ================= CATEGORIES ================= */}
-      <section className="categories">
-        <h2>Explore Popular Categories</h2>
+      {/* ================= CATEGORIES SECTION ================= */}
+      <section className="section categories">
+        <h2 className="section-title">Explore Popular Categories</h2>
         <div className="categories-grid">
-          <div className="category-card">💻 Web Development</div>
-          <div className="category-card">🎨 Graphic Design</div>
-          <div className="category-card">✍️ Content Writing</div>
-          <div className="category-card">📊 Data Analysis</div>
-          <div className="category-card">📱 Mobile Apps</div>
-          <div className="category-card">📢 Digital Marketing</div>
+          {categories.map((category, index) => (
+            <div className="category-card" key={index}><div className="category-icon">{category.icon}</div><span>{category.name}</span></div>
+          ))}
         </div>
       </section>
 
-      {/* ================= TESTIMONIALS ================= */}
-      <section className="testimonials">
-        <h2>What Our Users Say</h2>
-        <div className="testimonial-cards">
-          <div className="testimonial">
-            <p>"I found amazing talent here for my startup project!"</p>
-            <h4>- Sarah, Startup Founder</h4>
+      {/* ================= TESTIMONIALS SECTION ================= */}
+      <section className="section testimonials">
+          <h2 className="section-title">Trusted by Innovators & Experts</h2>
+          <div className="testimonial-carousel">
+              {testimonials.map((testimonial, index) => (
+                  <div className="testimonial-card" key={index}><p className="quote">"{testimonial.quote}"</p><div className="author"><span className="author-name">{testimonial.name}</span><span className="author-role">{testimonial.role}</span></div></div>
+              ))}
           </div>
-          <div className="testimonial">
-            <p>"This platform helped me work with clients worldwide."</p>
-            <h4>- James, Freelancer</h4>
-          </div>
-        </div>
       </section>
 
-      {/* ================= FINAL CTA ================= */}
-      <section className="cta-section">
-        <h2>Ready to Get Started?</h2>
-        <p>Join Now</p>
-        <div className="cta-buttons">
-          <Link to="/register" className="hire-link">
-            Sign Up Free
-          </Link>
-          <Link to="/login" className="work-link">
-            Log In
-          </Link>
-        </div>
+      {/* ================= FINAL CTA SECTION ================= */}
+      <section className="section cta-section">
+          <h2 className="section-title">Ready to Start Your Next Project?</h2>
+          <p>Join thousands of businesses and professionals building their future on GigConnect.</p>
+          <div className="cta-buttons">
+              <Link to="/register" className="cta-button primary">Sign Up Now</Link>
+              <Link to="/browse-gigs" className="cta-button secondary">Explore Gigs</Link>
+          </div>
       </section>
-    </>
+    </div>
   );
 };
 

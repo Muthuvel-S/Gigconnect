@@ -1,155 +1,219 @@
-/* Page */
-.mygigs-page {
-  background: #f8f9fa;
-  min-height: 100vh;
-  padding: 50px 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* === MAIN CONTAINER & HEADER === */
+.applied-gigs-container {
+  padding: 2rem 5%;
+  max-width: 1200px;
+  margin: 2rem auto;
+  background-color: #f8f9fa;
+  min-height: 80vh;
 }
 
-/* Container */
-.mygigs-container {
-  max-width: 1100px;
-  margin: auto;
-}
-
-.mygigs-container h2 {
+.page-header {
   text-align: center;
-  margin-bottom: 30px;
-  font-size: 2rem;
-  color: #222;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 0.5rem;
+}
+
+.page-header p {
+  font-size: 1.1rem;
+  color: #6c757d;
+}
+
+/* === LOADING & EMPTY STATE === */
+.loading-indicator {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #6c757d;
+  padding: 4rem 0;
+}
+
+.no-applications-found {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.no-apps-icon {
+  font-size: 4rem;
+  color: #0A6E7C; /* Primary color */
+  margin-bottom: 1rem;
+}
+
+.no-applications-found h2 {
+  font-size: 1.8rem;
+  color: #343a40;
+}
+
+.no-applications-found p {
+  color: #6c757d;
+  margin-bottom: 2rem;
+}
+
+.btn-browse-gigs {
+  background-color: #0A6E7C;
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 50px;
+  text-decoration: none;
   font-weight: 600;
+  transition: background-color 0.3s, transform 0.3s;
 }
 
-/* Grid layout */
-.mygigs-list {
+.btn-browse-gigs:hover {
+  background-color: #085560;
+  transform: translateY(-2px);
+}
+
+
+/* === APPLICATIONS TABLE LAYOUT === */
+.applications-table {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.table-header, .table-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
+  grid-template-columns: 3fr 1.5fr 1.5fr 1fr;
+  gap: 1.5rem;
+  padding: 1.25rem 2rem;
+  align-items: center;
+  border-bottom: 1px solid #e9ecef;
 }
 
-/* Card */
-.gig-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 22px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-  transition: transform 0.2s, box-shadow 0.2s;
-  border-left: 6px solid #45484c;
+.table-header {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.gig-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+.table-row:last-child {
+  border-bottom: none;
 }
 
-.gig-card h3 {
-  margin: 0 0 8px;
-  font-size: 1.35rem;
-  color: #1f1f1f;
-}
-
-.gig-card p {
-  margin: 4px 0;
-  font-size: 0.95rem;
-  color: #4b4b4b;
-}
-
-/* Status */
-.gig-status {
-  font-weight: 500;
-  font-size: 0.85rem;
-  padding: 3px 10px;
-  border-radius: 6px;
-  display: inline-block;
-}
-
-.gig-status.in-progress { background: #f0ad4e; color: #fff; }
-.gig-status.completed { background: #0275d8; color: #fff; }
-.gig-status.paid { background: #5cb85c; color: #fff; }
-
-/* Freelancer link */
-.freelancer-link {
-  color: #007bff;
-  font-weight: 500;
-  margin-left: 4px;
-  text-decoration: none;
-}
-
-.freelancer-link:hover {
-  text-decoration: underline;
-}
-
-/* Buttons */
-.gig-actions,
-.proposal-actions {
+.table-row.deleted {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 12px;
-}
-
-.action-btn {
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-size: 0.85rem;
+  grid-column: 1 / -1;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  color: #9b2226;
+  background-color: #fde2e4;
   font-weight: 500;
-  text-align: center;
-  transition: 0.2s;
-  min-width: 90px;
-  text-decoration: none;
-  display: inline-block;
 }
 
-/* Button Colors */
-.action-btn.view { background: #17a2b8; color: #fff; }
-.action-btn.proposals { background: #007bff; color: #fff; }
-.action-btn.complete { background: #28a745; color: #fff; }
-.action-btn.message { background: #6c757d; color: #fff; }
-.action-btn.payment { background: #ffc107; color: #333; }
-.action-btn.review { background: #007bff; color: #fff; }
-.action-btn.accept { background: #28a745; color: #fff; }
-.action-btn.reject { background: #dc3545; color: #fff; }
 
-/* Proposal card */
-.proposal-card {
-  margin-top: 12px;
-  padding: 15px;
-  border-radius: 10px;
-  background: #f7f7f7;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+/* === TABLE CELL STYLES === */
+.gig-info h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 0 0 0.25rem 0;
 }
 
-/* Loading & No proposals */
-.loading-text,
-.no-proposals {
-  text-align: center;
-  margin-top: 12px;
-  font-style: italic;
-  color: #555;
-}
-
-/* Fade-in */
-.fade-in {
-  opacity: 0;
-  transform: translateY(15px);
-  animation: fadeInUp 0.5s forwards;
-}
-
-@keyframes fadeInUp {
-  to { opacity: 1; transform: translateY(0); }
-}
-.gig-deleted {
-  background-color: #ffeded;
-  border: 1px solid #ff6b6b;
-  color: #a00;
-  padding: 20px;
-  border-radius: 12px;
-  text-align: center;
-  font-style: italic;
-}
-
-.gig-deleted p {
+.gig-info p {
+  font-size: 0.9rem;
+  color: #6c757d;
   margin: 0;
+}
+
+.bid-amount {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #343a40;
+}
+
+
+/* === STATUS BADGES === */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+
+.status-badge.status-pending {
+  background-color: #fff6e6;
+  color: #b45309;
+}
+
+.status-badge.status-accepted {
+  background-color: #e6f7f0;
+  color: #0d6e3a;
+}
+
+.status-badge.status-rejected {
+  background-color: #fde2e4;
+  color: #9b2226;
+}
+
+
+/* === ACTION BUTTON === */
+.action-cell {
+  text-align: right;
+}
+.btn-view-gig {
+  background: transparent;
+  color: #0A6E7C;
+  border: 1px solid #0A6E7C;
+  padding: 8px 18px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-view-gig:hover {
+  background-color: #0A6E7C;
+  color: #fff;
+}
+
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 992px) {
+  .table-header {
+    display: none; /* Hide header on smaller screens */
+  }
+
+  .table-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1.5rem;
+    text-align: left;
+  }
+
+  .action-cell {
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+  
+  /* Add labels for context */
+  .table-row > div:before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #6c757d;
+    margin-right: 1rem;
+    display: inline-block;
+  }
+
+  .bid-amount:before { content: 'Your Bid: '; }
+  .status-cell:before { content: 'Status: '; }
+  .gig-info:before, .action-cell:before { content: ''; }
 }

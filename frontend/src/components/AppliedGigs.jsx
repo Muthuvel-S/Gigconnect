@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { FaBriefcase, FaHourglassHalf, FaCheckCircle, FaTimesCircle, FaExclamationTriangle } from 'react-icons/fa';
 import api from '../api';
-import './AppliedGigs.css';
+import './AppliedGigs.css'; // We will replace this file's content next
 
 const AppliedGigs = () => {
   const [proposals, setProposals] = useState([]);
@@ -26,70 +27,89 @@ const AppliedGigs = () => {
     fetchAppliedGigs();
   }, [role]);
 
-  const formatStatusClass = (status) => status.toLowerCase().replace(/\s+/g, '-');
+  const StatusBadge = ({ status }) => {
+    const lowerCaseStatus = status.toLowerCase();
+    let icon;
+    switch (lowerCaseStatus) {
+      case 'accepted':
+        icon = <FaCheckCircle />;
+        break;
+      case 'rejected':
+        icon = <FaTimesCircle />;
+        break;
+      default:
+        icon = <FaHourglassHalf />;
+    }
+    return (
+      <span className={`status-badge status-${lowerCaseStatus}`}>
+        {icon}
+        {status}
+      </span>
+    );
+  };
 
   if (isLoading) {
-    return <div className="loading-text">Loading applied gigs...</div>;
+    return <div className="loading-indicator">Loading your applications...</div>;
   }
 
   return (
-    <div className="mygigs-page">
-      <div className="mygigs-container">
-        <h2>My Applied Gigs</h2>
+    <div className="applied-gigs-container">
+      <header className="page-header">
+        <h1>My Applications</h1>
+        <p>Track the status of all your submitted proposals.</p>
+      </header>
 
-        {proposals.length > 0 ? (
-          <div className="mygigs-list">
-            {proposals.map((proposal) => {
-              const isGigDeleted = !proposal.gig;
+      {proposals.length > 0 ? (
+        <div className="applications-table">
+          <div className="table-header">
+            <div>Gig Title & Client</div>
+            <div>Your Bid</div>
+            <div>Status</div>
+            <div>Action</div>
+          </div>
+          {proposals.map((proposal) => {
+            const isGigDeleted = !proposal.gig;
 
+            if (isGigDeleted) {
               return (
-                <div
-                  key={proposal._id}
-                  className={`gig-card fade-in ${
-                    isGigDeleted ? 'gig-deleted' : formatStatusClass(proposal.gig.status)
-                  }`}
-                >
-                  {isGigDeleted ? (
-                    <p className="no-proposals">
-                      Gig details not found. It may have been deleted.
-                    </p>
-                  ) : (
-                    <>
-                      <h3>{proposal.gig.title}</h3>
-                      <p>
-                        <strong>Your Bid:</strong> ₹{proposal.bidAmount}
-                      </p>
-                      <p>
-                        <strong>Gig Status:</strong>{' '}
-                        <span className={`gig-status ${formatStatusClass(proposal.gig.status)}`}>
-                          {proposal.gig.status}
-                        </span>
-                      </p>
-                      <p>
-                        <strong>Status:</strong>{' '}
-                        <span className={`proposal-status ${formatStatusClass(proposal.status)}`}>
-                          {proposal.status}
-                        </span>
-                      </p>
-
-                      <div className="gig-actions">
-                        <Link
-                          to={`/gig/${proposal.gig._id}`}
-                          className="action-btn view"
-                        >
-                          View Gig
-                        </Link>
-                      </div>
-                    </>
-                  )}
+                <div key={proposal._id} className="table-row deleted">
+                  <FaExclamationTriangle />
+                  <span>This gig is no longer available. It may have been removed by the client.</span>
                 </div>
               );
-            })}
-          </div>
-        ) : (
-          <p className="no-proposals">You have not applied for any gigs yet.</p>
-        )}
-      </div>
+            }
+
+            return (
+              <div key={proposal._id} className="table-row">
+                <div className="gig-info">
+                  <h3>{proposal.gig.title}</h3>
+                  <p>by {proposal.gig.postedBy?.username || 'Unknown Client'}</p>
+                </div>
+                <div className="bid-amount">
+                  ₹{proposal.bidAmount.toLocaleString()}
+                </div>
+                <div className="status-cell">
+                  <StatusBadge status={proposal.status} />
+                </div>
+                <div className="action-cell">
+                  <Link to={`/gig/${proposal.gig._id}`} className="btn-view-gig">
+                    View Details
+                  </Link>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="no-applications-found">
+          <FaBriefcase className="no-apps-icon" />
+          <h2>No Applications Yet</h2>
+          <p>You haven't applied to any gigs. Start exploring opportunities now!</p>
+          <Link to="/browse-gigs" className="btn-browse-gigs">
+            Browse Gigs
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

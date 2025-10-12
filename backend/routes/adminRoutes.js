@@ -59,9 +59,13 @@ router.get('/users', auth, adminAuth, async (req, res) => {
   }
 });
 
+// THIS IS THE CORRECTED ROUTE
 router.get('/gigs', auth, adminAuth, async (req, res) => {
   try {
-    const gigs = await Gig.find().populate('hiredFreelancer', 'username');
+    const gigs = await Gig.find()
+      .populate('hiredFreelancer', 'username')
+      .populate('postedBy', 'username _id'); // <-- THIS LINE WAS ADDED
+
     res.json(gigs);
   } catch (err) {
     console.error(err);

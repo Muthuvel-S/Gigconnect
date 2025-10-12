@@ -1,176 +1,198 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import api from "../api";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { FaCheckCircle, FaClock, FaDollarSign, FaTasks, FaPlus, FaUser } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaClock,
+  FaDollarSign,
+  FaTasks,
+  FaPlus,
+  FaBriefcase,
+  FaSearch,
+} from "react-icons/fa";
 import CountUp from "react-countup";
 import "./Dashboard.css";
 
+// A smaller, reusable component for the statistic cards
+const StatCard = ({ icon, title, value, color, progress }) => (
+  <div className="stat-card" style={{ '--card-color': color }}>
+    <div className="card-icon-container">{icon}</div>
+    <div className="card-content">
+      <p className="card-title">{title}</p>
+      <h2 className="card-value">{value}</h2>
+    </div>
+    {progress !== undefined && (
+      <div className="card-progress-bar">
+        <div className="card-progress-fill" style={{ width: `${progress}%` }}></div>
+      </div>
+    )}
+  </div>
+);
+
 const Dashboard = () => {
-  const [userData, setUserData] = useState(null);
-  const [role, setRole] = useState(null);
+  const [user, setUser] = useState(null);
   const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
+    const fetchDashboardData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
       try {
         const decodedToken = jwtDecode(token);
-        setRole(decodedToken.user.role);
+        const userRole = decodedToken.user.role;
 
-        const fetchUserData = async () => {
-          try {
-            const response = await api.get("/profile");
-            setUserData(response.data);
-          } catch (error) {
-            if (error.response && error.response.status === 401) navigate("/login");
-          }
-        };
+        const statsEndpoint = userRole === "client" 
+          ? "/gigs/client/stats" 
+          : "/gigs/freelancer/stats";
 
-        const fetchStats = async () => {
-          try {
-            const url =
-              decodedToken.user.role === "client"
-                ? "/gigs/client/stats"
-                : "/gigs/freelancer/stats";
-            const res = await api.get(url);
-            setStats(res.data);
-          } catch (err) {
-            console.error("Error fetching stats:", err.response);
-          }
-        };
+        // Fetch user profile and stats in parallel
+        const [userResponse, statsResponse] = await Promise.all([
+          api.get("/profile"),
+          api.get(statsEndpoint).catch(() => ({ 
+            data: { completed: 0, inProgress: 0, earnings: 0, active: 0 } 
+          })) // Default stats on error
+        ]);
 
-        fetchUserData();
-        fetchStats();
+        setUser({ ...userResponse.data, role: userRole });
+        setStats(statsResponse.data);
+
       } catch (err) {
+        console.error("Dashboard initialization failed:", err);
+        setError("Could not load your dashboard. Please try logging in again.");
         localStorage.removeItem("token");
-        navigate("/login");
+      } finally {
+        setLoading(false);
       }
-    } else {
-      navigate("/login");
-    }
+    };
+
+    fetchDashboardData();
   }, [navigate]);
 
-  if (!userData || !stats)
-    return <div className="dashboard-loading">Loading dashboard...</div>;
+  // useMemo to prevent recalculating on every render
+  const cardConfig = useMemo(() => {
+    if (!user || !stats) return [];
 
-  const getPercentage = (value, total) =>
-    total ? Math.round((value / total) * 100) : 0;
+    if (user.role === "client") {
+      const totalGigs = stats.completed + stats.inProgress + stats.active;
+      const getPercentage = (value) => (totalGigs > 0 ? (value / totalGigs) * 100 : 0);
+      return [
+        {
+          icon: <FaTasks />,
+          title: "Active Gigs",
+          value: <CountUp end={stats.active || 0} duration={2} />,
+          color: "#3498db",
+          progress: getPercentage(stats.active || 0),
+        },
+        {
+          icon: <FaClock />,
+          title: "In Progress",
+          value: <CountUp end={stats.inProgress || 0} duration={2} />,
+          color: "#f1c40f",
+          progress: getPercentage(stats.inProgress || 0),
+        },
+        {
+          icon: <FaCheckCircle />,
+          title: "Completed Gigs",
+          value: <CountUp end={stats.completed || 0} duration={2} />,
+          color: "#2ecc71",
+          progress: getPercentage(stats.completed || 0),
+        },
+      ];
+    }
 
-  const totalClientGigs = stats.completed + stats.active + stats.inProgress;
-  const totalFreelancerGigs = stats.completed + stats.inProgress;
+    if (user.role === "freelancer") {
+      const totalGigs = stats.completed + stats.inProgress;
+      const getPercentage = (value) => (totalGigs > 0 ? (value / totalGigs) * 100 : 0);
+      return [
+        {
+          icon: <FaBriefcase />,
+          title: "Gigs In Progress",
+          value: <CountUp end={stats.inProgress || 0} duration={2} />,
+          color: "#e67e22",
+          progress: getPercentage(stats.inProgress || 0),
+        },
+        {
+          icon: <FaCheckCircle />,
+          title: "Completed Gigs",
+          value: <CountUp end={stats.completed || 0} duration={2} />,
+          color: "#2ecc71",
+          progress: getPercentage(stats.completed || 0),
+        },
+        {
+          icon: <FaDollarSign />,
+          title: "Total Earnings",
+          value: <>₹<CountUp end={stats.earnings || 0} duration={2} separator="," /></>,
+          color: "#1abc9c",
+        },
+      ];
+    }
+    return [];
+  }, [user, stats]);
+
+
+  if (loading) {
+    return <div className="dashboard-status">Loading Dashboard...</div>;
+  }
+
+  if (error) {
+    return <div className="dashboard-status error">{error}</div>;
+  }
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-layout">
       <header className="dashboard-header">
-        <h1>Welcome, {userData.username}!</h1>
+        <div className="welcome-message">
+          <h1>Welcome back, {user?.username}!</h1>
+          <p>Here's a summary of your activity.</p>
+        </div>
       </header>
 
-      {/* Stats Cards */}
-      <div className="cards-grid">
-        {role === "client" && (
-          <>
-            <div className="card completed">
-              <FaCheckCircle className="card-icon completed-icon" />
-              <h3>Completed Gigs</h3>
-              <p><CountUp end={stats.completed} duration={1.5} /></p>
-              <div className="progress-bar">
-                <div
-                  className="progress-fill completed"
-                  style={{ width: `${getPercentage(stats.completed, totalClientGigs)}%` }}
-                />
-              </div>
-            </div>
+      <main className="dashboard-main-content">
+        <section className="stats-grid">
+          {cardConfig.map((card, index) => (
+            <StatCard key={index} {...card} />
+          ))}
+        </section>
 
-            <div className="card active">
-              <FaTasks className="card-icon active-icon" />
-              <h3>Active Gigs</h3>
-              <p><CountUp end={stats.active} duration={1.5} /></p>
-              <div className="progress-bar">
-                <div
-                  className="progress-fill active"
-                  style={{ width: `${getPercentage(stats.active, totalClientGigs)}%` }}
-                />
-              </div>
+        <section className="dashboard-actions-container">
+          <div className="quick-actions-card">
+            <h2>Quick Actions</h2>
+            <div className="action-buttons">
+              {user?.role === "client" && (
+                <>
+                  <button className="action-btn primary" onClick={() => navigate("/post-gig")}>
+                    <FaPlus /> Post a New Gig
+                  </button>
+                  <button className="action-btn secondary" onClick={() => navigate("/my-gigs")}>
+                    <FaTasks /> Manage My Gigs
+                  </button>
+                </>
+              )}
+              {user?.role === "freelancer" && (
+                <>
+                  <button className="action-btn primary" onClick={() => navigate("/browse-gigs")}>
+                    <FaSearch /> Browse Gigs
+                  </button>
+                  <button className="action-btn secondary" onClick={() => navigate("/applied-gigs")}>
+                    <FaBriefcase /> My Applications
+                  </button>
+                </>
+              )}
             </div>
+          </div>
+          
+          {/* The "Recent Activity" card has been removed from here */}
 
-            <div className="card inprogress">
-              <FaClock className="card-icon inprogress-icon" />
-              <h3>In Progress</h3>
-              <p><CountUp end={stats.inProgress} duration={1.5} /></p>
-              <div className="progress-bar">
-                <div
-                  className="progress-fill inprogress"
-                  style={{ width: `${getPercentage(stats.inProgress, totalClientGigs)}%` }}
-                />
-              </div>
-            </div>
-          </>
-        )}
-
-        {role === "freelancer" && (
-          <>
-            <div className="card completed">
-              <FaCheckCircle className="card-icon completed-icon" />
-              <h3>Completed Gigs</h3>
-              <p><CountUp end={stats.completed} duration={1.5} /></p>
-              <div className="progress-bar">
-                <div
-                  className="progress-fill completed"
-                  style={{ width: `${getPercentage(stats.completed, totalFreelancerGigs)}%` }}
-                />
-              </div>
-            </div>
-
-            <div className="card inprogress">
-              <FaClock className="card-icon inprogress-icon" />
-              <h3>In Progress</h3>
-              <p><CountUp end={stats.inProgress} duration={1.5} /></p>
-              <div className="progress-bar">
-                <div
-                  className="progress-fill inprogress"
-                  style={{ width: `${getPercentage(stats.inProgress, totalFreelancerGigs)}%` }}
-                />
-              </div>
-            </div>
-
-            <div className="card earnings">
-              <FaDollarSign className="card-icon earnings-icon" />
-              <h3>Total Earnings</h3>
-              <p>₹ <CountUp end={stats.earnings} duration={1.5} separator="," /></p>
-            </div>
-          </>
-        )}
-      </div>
-
-      {/* Quick Actions */}
-      <div className="quick-actions">
-        <h2>Quick Actions</h2>
-        <div className="action-buttons">
-          {role === "client" && (
-            <>
-              <button onClick={() => navigate("/post-gig")}>
-                <FaPlus /> Post New Gig
-              </button>
-              <button onClick={() => navigate("/my-gigs")}>
-                <FaTasks /> My Gigs
-              </button>
-            </>
-          )}
-          {role === "freelancer" && (
-            <>
-              <button onClick={() => navigate("/browse-gigs")}>
-                <FaTasks /> Browse Gigs
-              </button>
-            
-              <button onClick={() => navigate("/applied-gigs")}>
-                <FaTasks />Applied Gigs
-              </button>
-            </>
-          )}
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
   );
 };

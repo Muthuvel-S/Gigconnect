@@ -4,15 +4,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  background-color:#f6f6f7;
+  padding: 1rem 2rem;
+  background-color: #f6f6f7;
   color: white;
   position: relative;
   z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   height: 70px;
-  
 }
+
 .nav-logo {
   display: flex;
   align-items: center;
@@ -31,6 +31,7 @@
 .nav-logo:hover {
   color: #020302;
 }
+
 .nav-menu {
   display: none;
   flex-direction: column;
@@ -42,18 +43,22 @@
   padding: 1rem;
   border-top: 1px solid #444;
 }
+
 .nav-menu.open {
   display: flex;
 }
+
 .nav-link {
   padding: 0.75rem 0;
   color: rgb(20, 14, 14);
   text-decoration: none;
   transition: color 0.3s;
 }
+
 .nav-link:hover {
   color: #060906;
 }
+
 .menu-toggle {
   display: block;
   background: none;
@@ -62,10 +67,11 @@
   font-size: 1.5rem;
   cursor: pointer;
 }
+
 .logout-btn {
   background: none;
   border: none;
-  color:black;
+  color: black;
   font-size: 1rem;
   cursor: pointer;
   text-align: left;
@@ -76,8 +82,8 @@
   .navbar {
     flex-direction: row;
     justify-content: space-between;
-    padding: 1rem 2rem;
   }
+
   .nav-menu {
     display: flex;
     flex-direction: row;
@@ -88,20 +94,23 @@
     gap: 1.5rem;
     border-top: none;
   }
+
   .menu-toggle {
     display: none;
   }
+
   .logout-btn {
     text-align: center;
     padding: 0;
   }
 }
 
-
+/* Notification styling */
 .notification-container {
-  position: relative;
-  margin-left: 700px;
-  padding-top: 8px;
+  position: absolute;
+  right: 1rem; /* align to the right of navbar */
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .bell-icon {
@@ -128,7 +137,7 @@
 /* Dropdown styling */
 .notification-dropdown {
   position: absolute;
-  top: 30px;
+  top: 40px; /* slightly below the bell */
   right: 0;
   width: 250px;
   max-height: 300px;
@@ -136,7 +145,7 @@
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 100;
 }
 
@@ -163,4 +172,3 @@
   color: #777;
   font-size: 0.9rem;
 }
-

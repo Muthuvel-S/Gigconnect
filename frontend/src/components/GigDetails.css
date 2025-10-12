@@ -1,146 +1,248 @@
-/* frontend/src/components/GigDetails.css */
-
-/* Fullscreen Overlay Background */
-/* Fullscreen Overlay Background */
-.gig-details-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.6); /* dark transparent overlay */
-  backdrop-filter: blur(6px);
-  display: flex;
-  justify-content: center;   /* centers horizontally */
-  align-items: center;       /* centers vertically */
-  z-index: 2000;
-  margin: 0;                 /* remove page layout spacing */
-  padding: 0;
+/* === MAIN PAGE & BACK BUTTON === */
+.gig-details-page {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  animation: fadeIn 0.5s ease-out;
 }
 
-/* The Card Container */
-.gig-details-card {
-  background: #fff;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-weight: 600;
+  color: #0A6E7C;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+/* === NEW BEAUTIFUL PAGE HEADER === */
+.gig-page-header {
+  background: linear-gradient(135deg, #1B263B 0%, #0A6E7C 100%);
+  color: #fff;
+  padding: 3rem 2.5rem;
   border-radius: 16px;
-  padding: 30px;
-  width: 90%;
-  max-width: 700px;
-  max-height: 85vh;
-  overflow-y: auto;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.25);
-  animation: fadeInUp 0.3s ease-in-out;
+  margin-bottom: 2.5rem;
+}
+
+.header-content h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0.5rem 0;
+}
+
+.client-info {
+  font-size: 1.1rem;
+  opacity: 0.8;
+}
+.client-info a {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+.client-info a:hover {
+  text-decoration: underline;
+}
+
+/* === TWO-COLUMN LAYOUT & STICKY SIDEBAR === */
+.gig-details-body {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 3rem;
+  align-items: flex-start;
+}
+
+.sidebar {
   position: relative;
 }
 
+.sticky-sidebar {
+  position: sticky;
+  top: 2rem; /* The sidebar will stick 2rem from the top */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
 
-/* Title */
-.gig-details-card h2 {
-  margin-bottom: 15px;
+/* === MAIN CONTENT (LEFT) === */
+.main-content .section {
+  margin-bottom: 2.5rem;
+}
+.main-content .section h2 {
   font-size: 1.6rem;
-  color: #333;
-}
-
-/* Paragraphs */
-.gig-details-card p {
-  margin: 8px 0;
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
-/* Status Badge */
-.gig-status {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 8px;
   font-weight: 600;
-  color: #fff;
-  margin-bottom: 15px;
+  color: #343a40;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e9ecef;
+}
+.main-content .section p {
+  line-height: 1.8;
+  color: #495057;
+  font-size: 1.1rem;
 }
 
-.gig-status.open { background-color: #17a2b8; }
-.gig-status.in-progress { background-color: #f0ad4e; }
-.gig-status.completed { background-color: #0275d8; }
-.gig-status.paid { background-color: #28a745; }
-.gig-status.paid-out { background-color: #6f42c1; }
-
-/* Proposal Form */
-.proposal-form {
-  margin-top: 30px;
-  border-top: 1px solid #eee;
-  padding-top: 20px;
+.skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.skill-tag {
+  background-color: #e9ecef;
+  color: #495057;
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.proposal-form input,
-.proposal-form textarea {
+/* === SIDEBAR CARDS (RIGHT) === */
+.sidebar-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #e9ecef;
+}
+
+.details-card h3, .action-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.details-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.details-card li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.details-card svg {
+  color: #0A6E7C;
+  font-size: 1.5rem;
+}
+.details-card span {
+  display: block;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+.details-card strong {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* === STATUS BADGES === */
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+.status-badge.status-open { background-color: rgba(33, 150, 83, 0.1); color: #219653; }
+.status-badge.status-in-progress { background-color: rgba(242, 153, 74, 0.1); color: #f2994a; }
+.status-badge.status-completed, .status-badge.status-paid { background-color: rgba(45, 156, 219, 0.1); color: #2d9cdb; }
+
+/* === PROPOSAL FORM === */
+.proposal-form input, .proposal-form textarea {
   width: 100%;
   padding: 12px;
-  margin-bottom: 15px;
+  border: 1px solid #ced4da;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  margin-bottom: 1rem;
+  font-family: inherit;
   font-size: 1rem;
 }
-
-.submit-btn {
-  padding: 12px 24px;
-  background-color: #28a745;
-  color: white;
+.btn-primary {
+  width: 100%;
+  padding: 14px;
   border: none;
   border-radius: 8px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.submit-btn:hover {
-  background-color: #218838;
-}
-
-/* Messaging Button */
-.message-btn {
-  display: inline-block;
-  margin-top: 15px;
-  padding: 12px 24px;
-  background-color: #007bff;
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  transition: 0.2s;
-}
-
-.message-btn:hover {
-  background-color: #0056b3;
-}
-
-/* Already Applied Text */
-.already-applied {
-  margin-top: 20px;
-  color: green;
+  background-color: #0A6E7C;
+  color: #fff;
   font-weight: 600;
-}
-
-/* Close Button */
-.close-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
+  font-size: 1rem;
   cursor: pointer;
-  color: #555;
+  transition: background-color 0.3s;
+}
+.btn-primary:hover {
+  background-color: #085560;
 }
 
-.close-btn:hover {
-  color: #000;
-}
+/* === FEEDBACK BOX === */
+.feedback-box { text-align: center; }
+.feedback-box svg { font-size: 2.5rem; margin-bottom: 1rem; }
+.feedback-box.applied svg { color: #28a745; }
+.feedback-box.hired svg { color: #0A6E7C; }
 
-/* Smooth Popup Animation */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
+/* === PROPOSAL LIST (CLIENT) === */
+.proposal-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e9ecef;
+}
+.proposal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.freelancer-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.freelancer-avatar-placeholder {
+  width: 40px;
+  height: 40px;
+  color: #adb5bd;
+}
+.freelancer-link {
+  flex-grow: 1;
+  font-weight: 600;
+  color: #0A6E7C;
+  text-decoration: none;
+}
+.proposal-bid {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+.proposal-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.btn-accept, .btn-reject {
+  flex: 1; padding: 10px; border-radius: 8px; border: none; color: #fff;
+  font-weight: 600; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; gap: 0.5rem; transition: opacity 0.3s;
+}
+.btn-accept { background-color: #28a745; }
+.btn-reject { background-color: #dc3545; }
+
+/* === RESPONSIVE === */
+@media (max-width: 992px) {
+  .gig-details-body {
+    grid-template-columns: 1fr;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .sticky-sidebar {
+    position: static; /* Unstick the sidebar on smaller screens */
   }
 }

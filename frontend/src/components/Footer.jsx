@@ -27,10 +27,10 @@ const Footer = () => {
 
         {/* Policies Section */}
         <div className="footer-section footer-policies">
-          
+          <h3>Policies</h3>
           <Link to="/privacy">Privacy Policy</Link>
+          {/* The stray character that was between these two links has been removed. */}
           <Link to="/terms">Terms & Conditions</Link>
-          
         </div>
 
         {/* Newsletter */}
