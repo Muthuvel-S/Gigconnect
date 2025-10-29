@@ -6,50 +6,87 @@ const auth = require('../middleware/authMiddleware');
 const admin = require('firebase-admin');
 const serviceAccount = require('../serviceAccountKey.json');
 
-// Initialize Firebase Admin
+// ------------------- INITIALIZE FIREBASE ADMIN -------------------
 if (!admin.apps.length) {
-  admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
 }
 
 // ------------------- REGISTER -------------------
 router.post('/register', async (req, res) => {
   const { username, email, role, uid } = req.body;
-  try {
-    let existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: 'User already exists.' });
 
-    const newUser = new User({ username, email, role, uid });
+  try {
+    if (!username || !email || !uid) {
+      return res.status(400).json({ message: 'Missing required fields.' });
+    }
+
+    // 🔍 Check if username or email already exists
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) {
+      return res.status(400).json({ message: 'Username already taken.' });
+    }
+
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      return res.status(400).json({ message: 'Email already in use.' });
+    }
+
+    // ✅ Create new user in MongoDB
+    const newUser = new User({
+      username,
+      email,
+      role,
+      uid,
+      profilePicture:
+        'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+    });
+
     await newUser.save();
+
+    console.log(`✅ New user registered: ${username} (${email})`);
     res.status(201).json({ message: 'User registered successfully.' });
+
   } catch (err) {
-    console.error('Registration Error:', err.message);
-    res.status(500).send('Server Error during registration.');
+    console.error('❌ Registration Error:', err.message);
+    res.status(500).json({ message: 'Server Error during registration.' });
   }
 });
 
 // ------------------- LOGIN -------------------
 router.post('/login', async (req, res) => {
   const { idToken } = req.body;
+
   try {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
     const uid = decodedToken.uid;
     const emailVerified = decodedToken.email_verified;
-    if (!emailVerified) return res.status(401).json({ message: 'Please verify your email.' });
+
+    if (!emailVerified) {
+      return res.status(401).json({ message: 'Please verify your email before logging in.' });
+    }
 
     let user = await User.findOne({ uid });
-    if (!user) return res.status(400).json({ message: 'User not found in database.' });
+    if (!user) {
+      return res.status(400).json({ message: 'User not found in database.' });
+    }
 
     const payload = { user: { id: user._id, role: user.role } };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+
     res.json({ token, role: user.role });
+
   } catch (err) {
     console.error('Login Error:', err.message);
-    if (err.code === 'auth/id-token-expired') return res.status(401).json({ message: 'Session expired.' });
-    res.status(500).send('Server Error during login.');
+    if (err.code === 'auth/id-token-expired') {
+      return res.status(401).json({ message: 'Session expired. Please login again.' });
+    }
+    res.status(500).json({ message: 'Server Error during login.' });
   }
 });
 
-// ------------------- DASHBOARD (own data) -------------------
+// ------------------- DASHBOARD (OWN DATA) -------------------
 router.get('/dashboard', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-__v');
@@ -57,7 +94,7 @@ router.get('/dashboard', auth, async (req, res) => {
     res.json(user);
   } catch (err) {
     console.error('Dashboard Error:', err.message);
-    res.status(500).send('Server Error fetching dashboard.');
+    res.status(500).json({ message: 'Server Error fetching dashboard.' });
   }
 });
 
@@ -69,7 +106,7 @@ router.get('/profile', auth, async (req, res) => {
     res.json(user);
   } catch (err) {
     console.error('Profile Error:', err.message);
-    res.status(500).send('Server Error fetching profile.');
+    res.status(500).json({ message: 'Server Error fetching profile.' });
   }
 });
 
@@ -80,42 +117,42 @@ router.put('/profile', auth, async (req, res) => {
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ message: 'User not found.' });
 
-    // Update freelancer-specific fields
+    // Update freelancer fields
     if (user.role === 'freelancer') {
       if (skills) user.skills = skills;
       if (description) user.description = description;
       if (portfolio) user.portfolio = portfolio;
-      if (upiId) user.upiId = upiId; // stored but hidden in response
+      if (upiId) user.upiId = upiId;
     }
 
-    // Update common fields
+    // Common fields
     if (username) user.username = username;
     if (email) user.email = email;
     if (profilePicture) user.profilePicture = profilePicture;
 
     await user.save();
 
-    // Remove UPI ID from response
     const userResponse = user.toObject();
     delete userResponse.upiId;
 
     res.json(userResponse);
   } catch (err) {
     console.error('Profile Update Error:', err.message);
-    res.status(500).send('Server Error updating profile.');
+    res.status(500).json({ message: 'Server Error updating profile.' });
   }
 });
 
 // ------------------- GET USER BY ID -------------------
 router.get('/profile/:id', async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select('-__v -upiId'); // hide UPI
+    const user = await User.findById(req.params.id).select('-__v -upiId');
     if (!user) return res.status(404).json({ message: 'User not found.' });
     res.json(user);
   } catch (err) {
     console.error('Profile Data Error:', err.message);
-    res.status(500).send('Server Error fetching profile data.');
+    res.status(500).json({ message: 'Server Error fetching profile data.' });
   }
 });
 
 module.exports = router;
+
