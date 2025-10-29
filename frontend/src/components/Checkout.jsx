@@ -49,7 +49,7 @@ const Checkout = () => {
         key: RAZORPAY_KEY_ID,
         amount,
         currency,
-        name: 'GigConnect',
+        name: 'MV WORK',
         description: 'Payment for Gig',
         order_id,
         handler: async function (response) {

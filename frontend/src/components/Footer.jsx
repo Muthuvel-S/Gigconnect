@@ -9,9 +9,9 @@ const Footer = () => {
 
         {/* About Section */}
         <div className="footer-section footer-about">
-          <h3>About GigConnect</h3>
+          <h3>About MV WORK</h3>
           <p>
-            GigConnect is a global freelance platform connecting skilled professionals 
+            MV WORK is a global freelance platform connecting skilled professionals 
             with clients across the world. We empower freelancers to grow their careers, 
             showcase their talents, and collaborate on meaningful projects.
           </p>
@@ -57,7 +57,7 @@ const Footer = () => {
 
       {/* Footer Bottom */}
       <div className="footer-bottom">
-        &copy; {new Date().getFullYear()} GigConnect. All rights reserved.
+        &copy; {new Date().getFullYear()} MV WORK. All rights reserved.
       </div>
     </footer>
   );

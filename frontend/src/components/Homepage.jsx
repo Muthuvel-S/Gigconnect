@@ -24,7 +24,7 @@ const categories = [
   { icon: <FaBullhorn />, name: "Digital Marketing" },
 ];
 const testimonials = [
-    { quote: "GigConnect revolutionized how we hire talent. We found an incredible developer in just two days!", name: "Aarav Patel", role: "Startup Founder, FinTech Co." },
+    { quote: "MV WORK revolutionized how we hire talent. We found an incredible developer in just two days!", name: "Aarav Patel", role: "Startup Founder, FinTech Co." },
     { quote: "As a freelance designer, this is the best platform I've used. The quality of clients is top-notch and payments are always secure.", name: "Priya Singh", role: "UI/UX Designer" },
     { quote: "The collaboration tools made managing a complex project across timezones incredibly simple. Highly recommended!", name: "John Davis", role: "Project Manager, Tech Corp." },
 ];
@@ -105,7 +105,7 @@ const HeroSection = () => {
       {/* ================= FINAL CTA SECTION ================= */}
       <section className="section cta-section">
           <h2 className="section-title">Ready to Start Your Next Project?</h2>
-          <p>Join thousands of businesses and professionals building their future on GigConnect.</p>
+          <p>Join thousands of businesses and professionals building their future on MV WORK.</p>
           <div className="cta-buttons">
               <Link to="/register" className="cta-button primary">Sign Up Now</Link>
               <Link to="/browse-gigs" className="cta-button secondary">Explore Gigs</Link>

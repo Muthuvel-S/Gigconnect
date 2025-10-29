@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
-import logo from '../assets/gigconnect.png';
+import logo from '../assets/MV work.png';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const Navbar = () => {
     <nav className="navbar">
       <Link to="/" className="nav-logo">
         <img src={logo} alt="GigConnect Logo" className="logo-img" />
-        <span>𝐆𝐢𝐠𝐂𝐨𝐧𝐧𝐞𝐜𝐭</span>
+        <span>MV WORK</span>
       </Link>
 
       <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
