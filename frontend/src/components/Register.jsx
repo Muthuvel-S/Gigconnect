@@ -4,7 +4,7 @@ import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/
 import { auth } from '../firebase';
 import { Link, useNavigate } from 'react-router-dom';
 import VerificationMessage from './VerificationMessage';
-import './Register.css'; // External CSS for styling
+import './Register.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -15,9 +15,11 @@ const Register = () => {
   });
   const [isRegistered, setIsRegistered] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(''); // For inline error messages
+  const [error, setError] = useState('');
   const { username, email, password, role } = formData;
   const navigate = useNavigate();
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,13 +27,14 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Reset error before submitting
+    setError('');
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       await sendEmailVerification(user);
 
-      await axios.post('http://localhost:5000/api/register', {
+      // ✅ Post to online backend
+      await axios.post(`${API_URL}/register`, {
         username,
         email,
         role,
@@ -46,9 +49,7 @@ const Register = () => {
     }
   };
 
-  if (isRegistered) {
-    return <VerificationMessage email={email} />;
-  }
+  if (isRegistered) return <VerificationMessage email={email} />;
 
   return (
     <div className="register-wrapper">
