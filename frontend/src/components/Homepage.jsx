@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { FaBriefcase, FaUserPlus, FaLightbulb, FaCheckCircle, FaHandshake, FaCode, FaPaintBrush, FaPenNib, FaChartLine, FaMobileAlt, FaBullhorn } from "react-icons/fa";
 import "./HeroSection.css";
-import heroVideo from "../assets/gigconnect.mp4"; // Ensure your video is imported
+import heroVideo from "../assets/giconnect.mp4"; // Ensure your video is imported
 
 // Data for sections
 const clientSteps = [
