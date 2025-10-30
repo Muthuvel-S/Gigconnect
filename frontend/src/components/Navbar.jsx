@@ -19,7 +19,7 @@ const Navbar = () => {
     <nav className="navbar">
       <Link to="/" className="nav-logo">
         <img src={logo} alt="GigConnect Logo" className="logo-img" />
-        <span>MV WORK</span>
+        <span>GIGCONNECT</span>
       </Link>
 
       <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
