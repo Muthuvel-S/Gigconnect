@@ -23,23 +23,36 @@ import AdminDashboard from "./components/AdminDashboard";
 import Checkout from "./components/Checkout";
 import Footer from "./components/Footer";
 
-import MaintenanceOverlay from "./components/MaintenanceOverlay";
+import MaintenancePage from "./components/MaintenancePage";
 
 function AppContent() {
   const role = localStorage.getItem("role");
   const location = useLocation();
 
-  // Turn maintenance mode on/off here
-  const maintenanceMode = true; // <-- set to false to disable maintenance
+  // Toggle maintenance ON/OFF here
+  const maintenanceMode = true; // <- set to false to restore normal app
 
-  // Optional: ensure focus management or additional page-level side effects
+  // Optional: Admin bypass (if you want to preview the site while maintenance is on)
+  // Set localStorage.setItem('maintenanceBypass', 'true') in browser to bypass.
+  const bypass = localStorage.getItem("maintenanceBypass") === "true";
+
   useEffect(() => {
-    if (maintenanceMode) {
-      // you could also set an "aria-hidden" attribute on the main app container
-      // but since the overlay is portaled and modal, it's usually sufficient
+    if (maintenanceMode && !bypass) {
+      // prevent scroll just for visual niceness (not required)
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prev || "";
+      };
     }
-  }, [maintenanceMode]);
+  }, [maintenanceMode, bypass]);
 
+  // If maintenance enabled and user is not bypassing, render only the maintenance page.
+  if (maintenanceMode && !bypass) {
+    return <MaintenancePage />;
+  }
+
+  // Otherwise render the normal app
   const renderDashboard = () => {
     switch (role) {
       case "admin":
@@ -53,15 +66,6 @@ function AppContent() {
 
   return (
     <>
-      {/* Overlay is portaled to document.body and will sit above the Navbar */}
-      {maintenanceMode && (
-        <MaintenanceOverlay
-          title="🚧 Site Maintenance"
-          message="Sorry for the inconvenience — updates are in progress. The site is temporarily unavailable."
-        />
-      )}
-
-      {/* Your normal app UI (will be visually behind the overlay) */}
       <Navbar />
 
       <Routes>
@@ -166,6 +170,7 @@ function App() {
 }
 
 export default App;
+
 
 
 
