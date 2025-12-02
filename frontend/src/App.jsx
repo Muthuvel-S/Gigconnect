@@ -18,11 +18,27 @@ import GigProposals from "./components/GigProposals";
 import ReviewForm from "./components/ReviewForm";
 import AdminDashboard from "./components/AdminDashboard";
 import Checkout from "./components/Checkout";
-import Footer from "./components/Footer"; // Import Footer
+import Footer from "./components/Footer";
+
+// ✅ FULL SCREEN MAINTENANCE COMPONENT
+const MaintenanceScreen = () => {
+  return (
+    <div className="fixed inset-0 bg-black/80 text-white flex flex-col items-center justify-center z-50 px-4">
+      <h1 className="text-3xl font-bold mb-4 text-center">🚧 Website Under Maintenance</h1>
+      <p className="text-lg text-center max-w-md">
+        Sorry for the inconvenience. We are currently updating the website.  
+        Please check back shortly.
+      </p>
+    </div>
+  );
+};
 
 function AppContent() {
   const role = localStorage.getItem("role");
-  const location = useLocation(); // Get current route
+  const location = useLocation();
+
+  // 🔥 Maintenance ON/OFF
+  const maintenanceMode = true; // Change to false when updates are done
 
   const renderDashboard = () => {
     switch (role) {
@@ -37,7 +53,11 @@ function AppContent() {
 
   return (
     <>
+      {/* 🔥 THIS BLOCKS THE ENTIRE WEBSITE */}
+      {maintenanceMode && <MaintenanceScreen />}
+
       <Navbar />
+
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/register" element={<Register />} />
@@ -47,19 +67,85 @@ function AppContent() {
         <Route path="/gig/:id" element={<GigDetails />} />
 
         {/* Protected Routes */}
-        <Route path="/message/:gigId/:recipientId" element={<PrivateRoute><Message /></PrivateRoute>} />
-        <Route path="/gig/:id/review" element={<PrivateRoute><ReviewForm /></PrivateRoute>} />
-        <Route path="/dashboard" element={<PrivateRoute>{renderDashboard()}</PrivateRoute>} />
-        <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-        <Route path="/profile/:id" element={<PrivateRoute><Profile /></PrivateRoute>} />
-        <Route path="/post-gig" element={<PrivateRoute><GigPosting /></PrivateRoute>} />
-        <Route path="/my-gigs" element={<PrivateRoute><MyGigs /></PrivateRoute>} />
-        <Route path="/applied-gigs" element={<PrivateRoute><AppliedGigs /></PrivateRoute>} />
-        <Route path="/gig-proposals/:id" element={<PrivateRoute><GigProposals /></PrivateRoute>} />
-        <Route path="/checkout/:id" element={<PrivateRoute><Checkout /></PrivateRoute>} />
+        <Route
+          path="/message/:gigId/:recipientId"
+          element={
+            <PrivateRoute>
+              <Message />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/gig/:id/review"
+          element={
+            <PrivateRoute>
+              <ReviewForm />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={<PrivateRoute>{renderDashboard()}</PrivateRoute>}
+        />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile/:id"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/post-gig"
+          element={
+            <PrivateRoute>
+              <GigPosting />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/my-gigs"
+          element={
+            <PrivateRoute>
+              <MyGigs />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/applied-gigs"
+          element={
+            <PrivateRoute>
+              <AppliedGigs />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/gig-proposals/:id"
+          element={
+            <PrivateRoute>
+              <GigProposals />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/checkout/:id"
+          element={
+            <PrivateRoute>
+              <Checkout />
+            </PrivateRoute>
+          }
+        />
       </Routes>
 
-      {/* Render Footer only on Homepage */}
+      {/* Footer only on homepage */}
       {location.pathname === "/" && <Footer />}
     </>
   );
@@ -74,3 +160,4 @@ function App() {
 }
 
 export default App;
+
