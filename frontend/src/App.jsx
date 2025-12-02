@@ -1,5 +1,8 @@
+// App.js
 import "./App.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+
 import Navbar from "./components/Navbar";
 import Homepage from "./components/Homepage";
 import Register from "./components/Register";
@@ -20,25 +23,56 @@ import AdminDashboard from "./components/AdminDashboard";
 import Checkout from "./components/Checkout";
 import Footer from "./components/Footer";
 
-// ✅ FULL SCREEN MAINTENANCE COMPONENT
-const MaintenanceScreen = () => {
+// ---------------------
+// FULL SCREEN MAINTENANCE COMPONENT
+// ---------------------
+const MaintenanceScreen = ({ title = "🚧 Website Under Maintenance", message = "Sorry for the inconvenience. We are currently updating the website. Please check back shortly." }) => {
   return (
-    <div className="fixed inset-0 bg-black/80 text-white flex flex-col items-center justify-center z-50 px-4">
-      <h1 className="text-3xl font-bold mb-4 text-center">🚧 Website Under Maintenance</h1>
-      <p className="text-lg text-center max-w-md">
-        Sorry for the inconvenience. We are currently updating the website.  
-        Please check back shortly.
-      </p>
+    // pointer-events-auto ensures this overlay receives clicks and prevents interaction with background
+    <div
+      className="fixed inset-0 z-[9999] pointer-events-auto flex items-center justify-center px-4"
+      role="alertdialog"
+      aria-modal="true"
+      aria-label="Maintenance notice"
+    >
+      {/* dark background */}
+      <div className="absolute inset-0 bg-black/85" />
+
+      {/* content card */}
+      <div className="relative max-w-xl w-full bg-white rounded-lg p-8 text-center shadow-2xl">
+        <h1 className="text-2xl md:text-3xl font-bold mb-4">{title}</h1>
+        <p className="text-sm md:text-lg text-gray-700">{message}</p>
+
+        {/* optional small note */}
+        <p className="mt-4 text-xs text-gray-500">We apologise for the inconvenience — thank you for your patience.</p>
+      </div>
     </div>
   );
 };
 
+// ---------------------
+// APP CONTENT
+// ---------------------
 function AppContent() {
   const role = localStorage.getItem("role");
   const location = useLocation();
 
-  // 🔥 Maintenance ON/OFF
-  const maintenanceMode = true; // Change to false when updates are done
+  // Turn maintenance mode on/off here
+  const maintenanceMode = true; // <-- set to false to disable maintenance
+
+  // Prevent background scroll when maintenance is active
+  useEffect(() => {
+    if (maintenanceMode) {
+      // store previous overflow to restore later (defensive)
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prev || "";
+      };
+    }
+    // if maintenanceMode is false, no cleanup needed here
+    return;
+  }, [maintenanceMode]);
 
   const renderDashboard = () => {
     switch (role) {
@@ -53,9 +87,15 @@ function AppContent() {
 
   return (
     <>
-      {/* 🔥 THIS BLOCKS THE ENTIRE WEBSITE */}
-      {maintenanceMode && <MaintenanceScreen />}
+      {/* Render maintenance overlay FIRST so it sits above everything */}
+      {maintenanceMode && (
+        <MaintenanceScreen
+          title="🚧 Site Maintenance"
+          message="Sorry for the inconvenience — updates are in progress. The site is temporarily unavailable."
+        />
+      )}
 
+      {/* App UI (will be visually behind the maintenance overlay when maintenanceMode === true) */}
       <Navbar />
 
       <Routes>
@@ -151,6 +191,7 @@ function AppContent() {
   );
 }
 
+// ---------------------
 function App() {
   return (
     <BrowserRouter>
@@ -160,4 +201,5 @@ function App() {
 }
 
 export default App;
+
 
