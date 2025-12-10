@@ -77,8 +77,9 @@
 
 .hero-content {
   position: relative;
-  z-index: 2;
-  max-width: 800px;
+  z-index: 5;
+  margin-top: -50px;
+  max-width: 1500px;
   animation: fadeIn 1.5s ease-out;
 }
 

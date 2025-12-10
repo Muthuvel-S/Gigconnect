@@ -1,206 +1,239 @@
+// GigDetails.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { FaMoneyBillWave, FaClock, FaMapMarkerAlt, FaTag, FaCheckCircle, FaTimes, FaPaperPlane, FaUserCircle } from 'react-icons/fa';
+import { FaArrowLeft } from "react-icons/fa";
 import "./GigDetails.css";
 
-const GigDetails = () => {
-    // --- All of your state and logic from before remains exactly the same ---
-    const [gig, setGig] = useState(null);
-    const [bidAmount, setBidAmount] = useState("");
-    const [message, setMessage] = useState("");
-    const [hasApplied, setHasApplied] = useState(false);
-    const [currentUserId, setCurrentUserId] = useState(null);
-    const [proposals, setProposals] = useState([]);
-    const [loadingProposals, setLoadingProposals] = useState(false);
+/** Simple safe API base */
+const API_BASE = (typeof window !== "undefined" && window.REACT_APP_API_BASE) || (typeof process !== "undefined" && process.env && process.env.REACT_APP_API_BASE) || "http://localhost:5000/api";
 
-    const { id } = useParams();
-    const role = localStorage.getItem("role");
-    const token = localStorage.getItem("token");
-    const navigate = useNavigate();
+const normalize = (v) => (v || "").toString().toLowerCase();
 
-    useEffect(() => {
+export default function GigDetails() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const role = localStorage.getItem("role");
+  const token = localStorage.getItem("token");
+
+  const [gig, setGig] = useState(null);
+  const [proposals, setProposals] = useState([]);
+  const [hasApplied, setHasApplied] = useState(false);
+  const [bidAmount, setBidAmount] = useState("");
+  const [message, setMessage] = useState("");
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch a single gig
+  const fetchGig = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/gigs/${id}`);
+      setGig(res.data);
+    } catch (err) {
+      console.error("fetchGig error:", err);
+      setGig(null);
+    }
+  };
+
+  // Fetch proposals (client)
+  const fetchProposals = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/gigs/${id}/proposals`, {
+        headers: token ? { "x-auth-token": token } : {},
+      });
+      setProposals(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.error("fetchProposals error:", err);
+      setProposals([]);
+    }
+  };
+
+  // Initial load
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      setIsLoading(true);
+      try {
         if (token) {
-            try {
-                const decodedToken = jwtDecode(token);
-                setCurrentUserId(decodedToken.user.id);
-            } catch (error) {
-                console.error("Failed to decode token:", error);
-            }
+          try {
+            const decoded = jwtDecode(token);
+            if (mounted) setCurrentUserId(decoded?.user?.id || decoded?.user?._id || null);
+          } catch (e) {
+            // ignore
+          }
         }
-        const fetchGigAndProposals = async () => {
-            try {
-                const gigRes = await axios.get(`http://localhost:5000/api/gigs/${id}`);
-                setGig(gigRes.data);
-                if (role === "client") {
-                    setLoadingProposals(true);
-                    const proposalsRes = await axios.get(`http://localhost:5000/api/gigs/${id}/proposals`, { headers: { "x-auth-token": token } });
-                    setProposals(proposalsRes.data);
-                    setLoadingProposals(false);
-                }
-            } catch (err) {
-                console.error("Failed to fetch gig/proposals:", err);
-            }
-        };
-        fetchGigAndProposals();
-        const checkIfApplied = async () => {
-            if (!token || role !== "freelancer") return;
-            try {
-                const res = await axios.get(`http://localhost:5000/api/gigs/proposals/check/${id}`, { headers: { "x-auth-token": token } });
-                setHasApplied(res.data.hasApplied);
-            } catch (err) {
-                console.error("Failed to check if applied:", err);
-            }
-        };
-        checkIfApplied();
-    }, [id, token, role]);
 
-    const handleProposalSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.post(`http://localhost:5000/api/gigs/${id}/proposals`, { bidAmount, message }, { headers: { "x-auth-token": token } });
-            alert("Proposal submitted successfully!");
-            setHasApplied(true);
-        } catch (err) {
-            console.error("Proposal submission failed:", err);
-            alert("Failed to submit proposal.");
+        await fetchGig();
+
+        if (role === "client") await fetchProposals();
+
+        if (role === "freelancer") {
+          try {
+            const appliedRes = await axios.get(`${API_BASE}/gigs/proposals/check/${id}`, {
+              headers: token ? { "x-auth-token": token } : {},
+            });
+            if (mounted) setHasApplied(Boolean(appliedRes.data?.hasApplied));
+          } catch (err) {
+            if (mounted) setHasApplied(false);
+          }
         }
+      } finally {
+        if (mounted) setIsLoading(false);
+      }
     };
+    load();
+    return () => (mounted = false);
+  }, [id, role, token]);
 
-    const handleProposalAction = async (proposalId, action) => {
-        try {
-            const endpoint = `http://localhost:5000/api/gigs/${id}/proposals/${proposalId}/${action}`;
-            await axios.put(endpoint, {}, { headers: { "x-auth-token": token } });
-            alert(`Proposal ${action} successfully!`);
-            const gigRes = await axios.get(`http://localhost:5000/api/gigs/${id}`);
-            setGig(gigRes.data);
-            const proposalsRes = await axios.get(`http://localhost:5000/api/gigs/${id}/proposals`, { headers: { "x-auth-token": token } });
-            setProposals(proposalsRes.data);
-        } catch (err) {
-            console.error(`Failed to ${action} proposal:`, err);
-            alert(`Failed to ${action} proposal.`);
-        }
-    };
-    
-    // --- End of unchanged logic ---
+  // Submit proposal (freelancer)
+  const handleProposalSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`${API_BASE}/gigs/${id}/proposals`, { bidAmount, message }, { headers: { "x-auth-token": token } });
+      setHasApplied(true);
+      alert("Proposal submitted");
+    } catch (err) {
+      console.error("submitProposal error:", err);
+      alert(err?.response?.data?.message || "Failed to submit proposal");
+    }
+  };
 
-    if (!gig) return <div className="loading-indicator">Loading gig details...</div>;
+  // Core: handle accept/reject and update local state with merged proposal
+  const handleProposalAction = async (proposalId, action) => {
+    try {
+      const res = await axios.put(
+        `${API_BASE}/gigs/${id}/proposals/${proposalId}/${action}`,
+        {},
+        { headers: { "x-auth-token": token } }
+      );
 
-    const isClientOwner = role === "client" && gig.postedBy._id === currentUserId;
-    const isFreelancerNotOwner = role === "freelancer" && gig.postedBy._id !== currentUserId;
-    const showProposalForm = isFreelancerNotOwner && gig.status === "open" && !hasApplied;
-    const isHiredFreelancer = gig.hiredFreelancer && gig.hiredFreelancer._id === currentUserId;
+      // server-returned proposal (your server sends it)
+      const returned = res.data?.proposal ?? null;
 
-    const StatusBadge = ({ status }) => {
-        const lowerCaseStatus = status.toLowerCase().replace(' ', '-');
-        return <span className={`status-badge status-${lowerCaseStatus}`}>{status}</span>;
-    };
+      if (returned) {
+        setProposals((prev) =>
+          prev.map((p) => {
+            if (p._id !== returned._id) return p;
 
-    return (
-        <div className="gig-details-page">
-            <button className="back-btn" onClick={() => navigate(-1)}>← Back to Gigs</button>
+            // Keep populated freelancer object from the old state if returned.freelancer is a string ID
+            const oldFreelancer = p.freelancer;
+            const returnedFreelancer = returned.freelancer;
+            const keepPopulated =
+              returnedFreelancer && typeof returnedFreelancer === "string" && oldFreelancer && typeof oldFreelancer === "object";
 
-            {/* NEW BEAUTIFUL HEADER */}
-            <header className="gig-page-header">
-                <div className="header-content">
-                    <StatusBadge status={gig.status} />
-                    <h1>{gig.title}</h1>
-                    <div className="client-info">
-                        Posted by <Link to={`/profile/${gig.postedBy._id}`}>{gig.postedBy.username}</Link>
-                    </div>
-                </div>
-            </header>
-            
-            <div className="gig-details-body">
-                {/* Main Content (Left Column) */}
-                <div className="main-content">
-                    <div className="section">
-                        <h2>Project Description</h2>
-                        <p>{gig.description}</p>
-                    </div>
-                    <div className="section">
-                        <h2>Required Skills</h2>
-                        <div className="skills-container">
-                            {gig.skills.map((skill) => (
-                                <span key={skill} className="skill-tag"><FaTag /> {skill}</span>
-                            ))}
-                        </div>
-                    </div>
+            return {
+              ...p,
+              ...returned,
+              freelancer: keepPopulated ? oldFreelancer : returnedFreelancer,
+            };
+          })
+        );
+      } else {
+        // fallback: re-fetch proposals if nothing returned
+        await fetchProposals();
+      }
 
-                    {isClientOwner && (
-                        <div className="section">
-                            <h2>Proposals Received ({proposals.length})</h2>
-                            {loadingProposals ? <p>Loading...</p> : 
-                            proposals.length > 0 ? (
-                                <div className="proposal-list-container">
-                                    {proposals.map(p => (
-                                        <div key={p._id} className="proposal-card">
-                                            <div className="proposal-header">
-                                                {p.freelancer.profilePicture ? (
-                                                    <img src={p.freelancer.profilePicture} alt={p.freelancer.username} className="freelancer-avatar"/>
-                                                ) : (
-                                                    <FaUserCircle className="freelancer-avatar-placeholder" />
-                                                )}
-                                                <Link to={`/profile/${p.freelancer._id}`} className="freelancer-link">{p.freelancer.username}</Link>
-                                                <span className="proposal-bid">₹{p.bidAmount.toLocaleString()}</span>
-                                            </div>
-                                            <p className="proposal-message">{p.message}</p>
-                                            {gig.status === "open" && (
-                                                <div className="proposal-actions">
-                                                    <button onClick={() => handleProposalAction(p._id, "accept")} className="btn-accept"><FaCheckCircle /> Accept</button>
-                                                    <button onClick={() => handleProposalAction(p._id, "reject")} className="btn-reject"><FaTimes /> Reject</button>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : <p>No proposals submitted yet.</p>}
-                        </div>
-                    )}
-                </div>
+      // update gig if returned, or refetch when accepting (gig changes)
+      if (res.data?.gig) {
+        setGig(res.data.gig);
+      } else if (action === "accept") {
+        await fetchGig();
+      }
 
-                {/* Sticky Sidebar (Right Column) */}
-                <div className="sidebar">
-                    <div className="sticky-sidebar">
-                        <div className="sidebar-card details-card">
-                            <h3>Project Details</h3>
-                            <ul>
-                                <li><FaMoneyBillWave /> <strong>₹{gig.budget.toLocaleString()}</strong><span>Budget</span></li>
-                                <li><FaClock /> <strong>{gig.duration}</strong><span>Est. Duration</span></li>
-                                <li><FaMapMarkerAlt /> <strong>{gig.location}</strong><span>Location</span></li>
-                            </ul>
-                        </div>
+      alert(res.data?.message || `Proposal ${action}ed`);
+    } catch (err) {
+      console.error("handleProposalAction error:", err);
+      alert(err?.response?.data?.message || "Action failed");
+    }
+  };
 
-                        <div className="sidebar-card action-card">
-                            {showProposalForm && (
-                                <form onSubmit={handleProposalSubmit} className="proposal-form">
-                                    <h3>Apply for this Gig</h3>
-                                    <input type="number" value={bidAmount} onChange={(e) => setBidAmount(e.target.value)} placeholder="Your Bid (₹)" required />
-                                    <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Your cover letter..." rows="5" required />
-                                    <button type="submit" className="btn-primary">Submit Proposal</button>
-                                </form>
-                            )}
-                            {hasApplied && (
-                                <div className="feedback-box applied">
-                                    <FaCheckCircle />
-                                    <h3>Proposal Submitted</h3>
-                                    <p>The client has received your application.</p>
-                                </div>
-                            )}
-                            {isHiredFreelancer && (
-                                <div className="feedback-box hired">
-                                    <h3>You're Hired!</h3>
-                                    <p>This project is in progress.</p>
-                                    <Link to={`/message/${gig._id}/${gig.postedBy._id}`} className="btn-primary"><FaPaperPlane /> Message Client</Link>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </div>
+  if (isLoading) return <div className="gig-page-minimal">Loading...</div>;
+  if (!gig) return <div className="gig-page-minimal">Gig not found</div>;
+
+  const isClientOwner = role === "client" && gig.postedBy?._id === currentUserId;
+  const isFreelancerNotOwner = role === "freelancer" && gig.postedBy?._id !== currentUserId;
+  const showProposalForm = isFreelancerNotOwner && normalize(gig.status) === "open" && !hasApplied;
+
+  return (
+    <div className="gig-details-page gig-page-minimal">
+      <button className="back-btn-minimal" onClick={() => navigate(-1)}>
+        <FaArrowLeft /> Back
+      </button>
+
+      <header className="header-minimal">
+        <h1>
+          {gig.title}
+          <span className={`status-badge-minimal status-${normalize(gig.status)}`} style={{ marginLeft: 12 }}>{gig.status}</span>
+        </h1>
+        <div className="header-meta">
+          Posted by <Link to={`/profile/${gig.postedBy?._id}`}>{gig.postedBy?.username}</Link>
         </div>
-    );
-};
+      </header>
 
-export default GigDetails;
+      <div className="content-section">
+        <h2>Project Overview</h2>
+        <div className="detail-block-container">
+          <div className="detail-item"><span>Budget</span><strong>₹{gig.budget?.toLocaleString()}</strong></div>
+          <div className="detail-item"><span>Duration</span><strong>{gig.duration}</strong></div>
+          <div className="detail-item"><span>Location</span><strong>{gig.location}</strong></div>
+        </div>
+      </div>
+
+      <div className="content-section">
+        <h2>Description</h2>
+        <p>{gig.description}</p>
+      </div>
+
+      <div className="content-section">
+        <h2>Required Skills</h2>
+        <div className="skills-list-minimal">{(gig.skills || []).map(s => <span key={s} className="skill-tag-minimal">{s}</span>)}</div>
+      </div>
+
+      {showProposalForm && (
+        <div className="content-section">
+          <h2>Your Application</h2>
+          <form className="proposal-form-minimal" onSubmit={handleProposalSubmit}>
+            <input type="number" value={bidAmount} onChange={e => setBidAmount(e.target.value)} placeholder="Your Bid (₹)" required />
+            <textarea value={message} onChange={e => setMessage(e.target.value)} placeholder="Your cover letter..." rows="5" required />
+            <button className="btn-primary-minimal" type="submit">Submit Proposal</button>
+          </form>
+        </div>
+      )}
+
+      {isClientOwner && (
+        <div className="content-section">
+          <h2>Proposals ({proposals.length})</h2>
+          {proposals.length === 0 ? <p>No proposals yet.</p> : (
+            <div className="proposal-list-container">
+              {proposals.map(p => {
+                const status = normalize(p.status || "pending");
+                return (
+                  <div key={p._id} className="proposal-card-minimal">
+                    <div className="proposal-header-minimal">
+                      <Link to={`/profile/${p.freelancer?._id}`} className="freelancer-link-minimal">{p.freelancer?.username || "Freelancer"}</Link>
+                      <span className="proposal-bid-minimal">₹{(p.bidAmount || 0).toLocaleString()}</span>
+                    </div>
+
+                    <p style={{ color: '#666', fontSize: '0.95rem', marginBottom: '1rem' }}>{p.message}</p>
+
+                    {normalize(gig.status) === "open" && status === "pending" ? (
+                      <div className="proposal-actions">
+                        <button className="btn-action-minimal accept" onClick={() => handleProposalAction(p._id, "accept")}>Accept</button>
+                        <button className="btn-action-minimal reject" onClick={() => handleProposalAction(p._1d, "reject")}>Reject</button>
+                      </div>
+                    ) : status === "accepted" ? (
+                      <p style={{ color: 'green', fontWeight: 700 }}>✔ Accepted</p>
+                    ) : status === "rejected" ? (
+                      <p style={{ color: 'red', fontWeight: 700 }}>✖ Rejected</p>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

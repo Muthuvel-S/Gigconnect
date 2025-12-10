@@ -147,11 +147,11 @@ const styles = {
     alignItems: 'center',
     backgroundColor: '#f0f4f8',
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    padding: '20px',
+    padding: '00px',
   },
   card: {
     backgroundColor: '#fff',
-    padding: '40px',
+    padding: '20px',
     borderRadius: '15px',
     boxShadow: '0 10px 40px rgba(0,0,0,0.08)',
     maxWidth: '700px',

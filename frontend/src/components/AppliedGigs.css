@@ -1,7 +1,7 @@
 /* === MAIN CONTAINER & HEADER === */
 .applied-gigs-container {
-  padding: 2rem 5%;
-  max-width: 1200px;
+  padding: 1rem 2%;
+  max-width: 1500px;
   margin: 2rem auto;
   background-color: #f8f9fa;
   min-height: 80vh;
@@ -44,7 +44,7 @@
 
 .no-apps-icon {
   font-size: 4rem;
-  color: #0A6E7C; /* Primary color */
+  color: #0A6E7C;
   margin-bottom: 1rem;
 }
 
@@ -67,14 +67,9 @@
   font-weight: 600;
   transition: background-color 0.3s, transform 0.3s;
 }
+.btn-browse-gigs:hover { background-color: #085560; transform: translateY(-2px); }
 
-.btn-browse-gigs:hover {
-  background-color: #085560;
-  transform: translateY(-2px);
-}
-
-
-/* === APPLICATIONS TABLE LAYOUT === */
+/* === APPLICATIONS TABLE LAYOUT (desktop-first) === */
 .applications-table {
   background-color: #ffffff;
   border-radius: 12px;
@@ -82,9 +77,10 @@
   overflow: hidden;
 }
 
+/* Desktop grid (matches MyGigs feel) */
 .table-header, .table-row {
   display: grid;
-  grid-template-columns: 3fr 1.5fr 1.5fr 1fr;
+  grid-template-columns: 3fr 1.5fr 1fr 1.5fr;
   gap: 1.5rem;
   padding: 1.25rem 2rem;
   align-items: center;
@@ -92,18 +88,17 @@
 }
 
 .table-header {
-  background-color: #f8f9fa;
-  color: #6c757d;
+  background-color: #e1e3e4;
+  color: #242525;
   font-weight: 600;
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.table-row:last-child {
-  border-bottom: none;
-}
+.table-row:last-child { border-bottom: none; }
 
+/* Deleted row style */
 .table-row.deleted {
   display: flex;
   grid-column: 1 / -1;
@@ -115,19 +110,23 @@
   font-weight: 500;
 }
 
-
-/* === TABLE CELL STYLES === */
-.gig-info h3 {
+/* ==== Table cell styles ==== */
+.gig-info .gig-title {
   font-size: 1.2rem;
   font-weight: 600;
   color: #212529;
   margin: 0 0 0.25rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
-.gig-info p {
+.gig-info .gig-client {
   font-size: 0.9rem;
   color: #6c757d;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .bid-amount {
@@ -135,7 +134,6 @@
   font-size: 1.1rem;
   color: #343a40;
 }
-
 
 /* === STATUS BADGES === */
 .status-badge {
@@ -149,25 +147,25 @@
   text-transform: capitalize;
 }
 
-.status-badge .fa-spin {
-  animation: fa-spin 2s infinite linear;
-}
+.status-badge .fa-spin { animation: fa-spin 2s infinite linear; }
 
-/* Application Statuses */
+/* status colors (kept same as earlier) */
 .status-badge.status-pending { background-color: #fffbeb; color: #b45309; }
 .status-badge.status-accepted { background-color: #e6f7f0; color: #0d6e3a; }
 .status-badge.status-rejected { background-color: #fde2e4; color: #9b2226; }
-
-/* Gig Statuses (for after acceptance) */
 .status-badge.status-in-progress { background-color: #fffbeb; color: #b45309; }
 .status-badge.status-completed { background-color: #e6f7f0; color: #0d6e3a; }
 .status-badge.status-paid { background-color: #f3e8ff; color: #581c87; }
+.status-badge.status-paidout { background-color: #f3e8ff; color: #581c87; }
 
-
-/* === ACTION BUTTON === */
+/* === ACTION BUTTONS (desktop) === */
 .action-cell {
-  text-align: right;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  align-items: center;
 }
+
 .btn-view-gig {
   background: transparent;
   color: #0A6E7C;
@@ -176,30 +174,77 @@
   border-radius: 50px;
   text-decoration: none;
   font-weight: 600;
-  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.18s ease;
 }
+.btn-view-gig:hover { background-color: #0A6E7C; color: #fff; }
 
-.btn-view-gig:hover {
+.btn-message {
   background-color: #0A6E7C;
   color: #fff;
+  padding: 8px 16px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.18s ease, transform 0.12s ease;
 }
+.btn-message:hover { background-color: #085560; transform: translateY(-1px); }
 
+/* small icon spacing */
+.btn-message svg { display: inline-block; vertical-align: middle; }
 
-/* === RESPONSIVE DESIGN === */
-@media (max-width: 992px) {
-  .table-header {
-    display: none; /* Hide header on smaller screens */
-  }
+/* === HYBRID: MOBILE = CARD LAYOUT === */
+/* at widths <= 900px we'll convert rows into stacked cards */
+@media (max-width: 900px) {
+  .table-header { display: none; }
 
   .table-row {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    padding: 1.5rem;
-    text-align: left;
+    display: block;
+    background: #fff;
+    margin: 0.75rem;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+    border: 1px solid #e9ecef;
   }
 
-  .action-cell {
-    text-align: left;
-    margin-top: 0.5rem;
+  .table-row.deleted {
+    margin: 0.75rem;
   }
+
+  .gig-info { margin-bottom: 10px; }
+  .gig-info .gig-title { white-space: normal; font-size: 1.15rem; }
+  .gig-info .gig-client { margin-top: 6px; }
+
+  .bid-amount { margin-bottom: 10px; }
+
+  .status-cell { margin-bottom: 12px; }
+
+  .action-cell {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  /* make buttons comfortable and full width on very small screens */
+  .btn-view-gig, .btn-message {
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+  }
+}
+
+/* very small screens: stack buttons vertically */
+@media (max-width: 480px) {
+  .action-cell {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .btn-view-gig, .btn-message { width: 100%; justify-content: center; }
 }

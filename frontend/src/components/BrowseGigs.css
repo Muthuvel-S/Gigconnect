@@ -206,7 +206,7 @@
   transition: background-color 0.3s, transform 0.3s;
 }
 .view-details-btn:hover {
-  background-color: #085560;
+  background-color: #eff3f4;
   transform: translateY(-2px);
 }
 

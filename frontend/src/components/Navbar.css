@@ -1,174 +1,185 @@
-/* frontend/src/components/Navbar.css */
+/* Define fallbacks */
+:root {
+  --primary-green:#0A6E7C;
+  --primary-green-darker:#0A6E7C;
+  --text-dark: #212529;
+}
 
+/* ==============================
+   1. Fixed Navbar Container (Opaque White)
+   ============================== */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: #f6f6f7;
-  color: white;
-  position: relative;
+  padding: 1rem 3rem; /* More horizontal padding */
+  
+  /* Fixed position for stability */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  height: 70px;
+  
+  /* Clean, solid white background */
+  background-color: white; 
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Subtle shadow */
 }
 
+/* ==============================
+   2. Logo & Links (Desktop)
+   ============================== */
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 0.5rem; /* space between logo and text */
-  font-size: 1.5rem;
-  font-weight: bold;
+  gap: 10px;
   text-decoration: none;
-  color: rgb(14, 13, 13);
+  color: var(--text-dark);
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 .logo-img {
-  height: 40px; /* adjust the size */
-  width: auto;
-}
-
-.nav-logo:hover {
-  color: #020302;
+  height: 40px;
 }
 
 .nav-menu {
-  display: none;
-  flex-direction: column;
-  width: 100%;
-  background-color: #121212;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  padding: 1rem;
-  border-top: 1px solid #444;
-}
-
-.nav-menu.open {
   display: flex;
+  align-items: center;
+  gap: 30px;
 }
 
 .nav-link {
-  padding: 0.75rem 0;
-  color: rgb(20, 14, 14);
+  color: var(--text-dark);
   text-decoration: none;
-  transition: color 0.3s;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 10px 0; /* Padding around text */
+  transition: color 0.2s ease;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  
+  /* Underline setup */
+  position: relative;
+}
+
+/* Dynamic Underline Effect */
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0; /* Starts at zero width (hidden) */
+  height: 3px;
+  background-color: var(--primary-green);
+  transition: width 0.3s ease-out; /* Animation for width change */
+  border-radius: 2px;
 }
 
 .nav-link:hover {
-  color: #060906;
+  color: var(--primary-green);
 }
 
+.nav-link:hover::after {
+  width: 100%; /* Expands to full width on hover */
+}
+
+/* Specific styling for the Call-to-Action button */
+.logout-btn,
+.nav-menu .nav-link[to="/register"] {
+    /* Resets for button links */
+    padding: 8px 16px;
+    border-radius: 6px;
+    color: white;
+    background-color: var(--primary-green);
+    margin-left: 10px;
+}
+
+.logout-btn:hover,
+.nav-menu .nav-link[to="/register"]:hover {
+    background-color: var(--primary-green-darker);
+    /* Disable underline effect for the button */
+    color: white;
+}
+.logout-btn::after,
+.nav-menu .nav-link[to="/register"]::after {
+    width: 0 !important;
+}
+
+
+/* ==============================
+   3. Mobile Hamburger (Hidden on Desktop)
+   ============================== */
 .menu-toggle {
-  display: block;
+  display: none;
   background: none;
   border: none;
-  color: white;
-  font-size: 1.5rem;
+  color: var(--text-dark);
+  font-size: 2rem;
   cursor: pointer;
+  z-index: 1002; /* Ensure button is above the menu overlay */
 }
 
-.logout-btn {
-  background: none;
-  border: none;
-  color: black;
-  font-size: 1rem;
-  cursor: pointer;
-  text-align: left;
-  padding: 0.75rem 0;
-}
-
-@media (min-width: 768px) {
-  .navbar {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .nav-menu {
-    display: flex;
-    flex-direction: row;
-    position: static;
-    width: auto;
-    background-color: transparent;
-    align-items: center;
-    gap: 1.5rem;
-    border-top: none;
-  }
-
+/* ==============================
+   4. Mobile Full-Screen Overlay Menu
+   ============================== */
+@media screen and (max-width: 768px) {
+  
+  /* Show the hamburger icon */
   .menu-toggle {
-    display: none;
+    display: block;
   }
 
-  .logout-btn {
+  /* Full Screen Overlay Styling */
+  .nav-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    flex-direction: column;
+    justify-content: center; /* Center links vertically */
+    align-items: center;
+    gap: 20px;
+    
+    background-color: rgba(255, 255, 255, 0.98); /* Near-opaque white background */
+    backdrop-filter: blur(10px);
+    
+    /* Fade-in Animation Logic */
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out, visibility 0.4s;
+  }
+
+  /* When the 'open' class is applied */
+  .nav-menu.open {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  /* Mobile Links Styling */
+  .nav-link {
+    font-size: 1.5rem; /* Larger text for mobile full-screen */
+    padding: 15px 0;
+    color: var(--text-dark);
+  }
+
+  .nav-link:hover {
+    color: var(--primary-green);
+  }
+  
+  /* Ensure the mobile links still have the animated underline */
+  .nav-link::after {
+    bottom: 5px; /* Adjust underline position for larger text */
+    height: 4px;
+  }
+
+  /* Button alignment in the mobile menu */
+  .logout-btn,
+  .nav-menu .nav-link[to="/register"] {
+    width: 200px;
     text-align: center;
-    padding: 0;
+    margin: 15px 0;
   }
-}
-
-/* Notification styling */
-.notification-container {
-  position: absolute;
-  right: 1rem; /* align to the right of navbar */
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.bell-icon {
-  font-size: 1.3rem;
-  cursor: pointer;
-  color: #333;
-}
-
-.badge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: red;
-  color: white;
-  font-size: 0.8rem;
-  font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 50%;
-  text-align: center;
-  min-width: 18px;
-  line-height: 1.2;
-}
-
-/* Dropdown styling */
-.notification-dropdown {
-  position: absolute;
-  top: 40px; /* slightly below the bell */
-  right: 0;
-  width: 250px;
-  max-height: 300px;
-  overflow-y: auto;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 100;
-}
-
-.notification-item {
-  padding: 0.5rem 0.75rem;
-  cursor: pointer;
-  border-bottom: 1px solid #eee;
-  font-size: 0.9rem;
-  color: #333;
-}
-
-.notification-item.unread {
-  font-weight: bold;
-  background-color: #f9f9f9;
-}
-
-.notification-item:hover {
-  background-color: #f1f1f1;
-}
-
-.no-notifications {
-  padding: 0.5rem;
-  text-align: center;
-  color: #777;
-  font-size: 0.9rem;
 }

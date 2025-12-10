@@ -1,69 +1,97 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FaCheckCircle, FaEnvelopeOpenText } from 'react-icons/fa';
 
 const VerificationMessage = ({ email }) => {
-  const wrapperStyle = {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
-    fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
-  };
-
-  const cardStyle = {
-    backgroundColor: '#ffffff',
-    padding: '2rem',
-    borderRadius: '12px',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-    textAlign: 'center',
-    maxWidth: '400px',
-    width: '100%',
-  };
-
-  const titleStyle = {
-    color: '#4CAF50',
-    marginBottom: '1rem',
-    fontSize: '1.8rem',
-  };
-
-  const messageStyle = {
-    color: '#333',
-    fontSize: '1rem',
-    margin: '10px 0',
-  };
-
-  const buttonStyle = {
-    display: 'inline-block',
-    padding: '0.75rem 1.5rem',
-    backgroundColor: '#4CAF50',
-    color: '#fff',
-    textDecoration: 'none',
-    borderRadius: '6px',
-    fontSize: '1rem',
-    marginTop: '20px',
-    transition: 'background-color 0.3s',
-  };
-
-  const buttonHover = (e) => {
-    e.target.style.backgroundColor = '#45a049';
-  };
-
-  const buttonLeave = (e) => {
-    e.target.style.backgroundColor = '#4CAF50';
-  };
-
   return (
-    <div style={wrapperStyle}>
-      <div style={cardStyle}>
-        <h2 style={titleStyle}>Registration Successful!</h2>
-        <p style={messageStyle}>A verification link has been sent to <strong>{email}</strong>.</p>
-        <p style={messageStyle}>Didn't receive it? Please check your spam or junk folder.</p>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        background: '#fff',
+        padding: '20px',
+        fontFamily: 'Segoe UI, sans-serif',
+      }}
+    >
+      <div
+        style={{
+          background: '#ffff',
+          padding: '2.5rem',
+          borderRadius: '18px',
+          width: '100%',
+          maxWidth: '430px',
+          textAlign: 'center',
+          boxShadow: '0 10px 35px rgba(0,0,0,0.15)',
+          animation: 'fadeIn 0.6s ease-out',
+        }}
+      >
+        {/* Icon */}
+        <FaCheckCircle size={55} color="#0A6E7C" style={{ marginBottom: '10px' }} />
+
+        <h2
+          style={{
+            fontSize: '1.9rem',
+            fontWeight: '700',
+            marginBottom: '10px',
+            color: '#0A6E7C',
+          }}
+        >
+          Registration Successful!
+        </h2>
+
+        <p
+          style={{
+            color: '#555',
+            fontSize: '1.1rem',
+            lineHeight: '1.6',
+            marginBottom: '15px',
+          }}
+        >
+          We've sent a verification link to:
+        </p>
+
+        <p
+          style={{
+            fontWeight: '600',
+            color: '#222',
+            fontSize: '1.05rem',
+            wordBreak: 'break-word',
+          }}
+        >
+          <FaEnvelopeOpenText style={{ marginRight: '6px', color: '#0A6E7C' }} />
+          {email}
+        </p>
+
+        <p
+          style={{
+            color: '#777',
+            fontSize: '0.95rem',
+            marginTop: '10px',
+            marginBottom: '25px',
+          }}
+        >
+          Didn't receive it? Check your spam/junk folder.
+        </p>
+
+        {/* Button */}
         <Link
           to="/login"
-          style={buttonStyle}
-          onMouseEnter={buttonHover}
-          onMouseLeave={buttonLeave}
+          style={{
+            display: 'inline-block',
+            padding: '12px 26px',
+            backgroundColor: '#0A6E7C',
+            color: '#fff',
+            borderRadius: '50px',
+            fontSize: '1rem',
+            fontWeight: '600',
+            textDecoration: 'none',
+            transition: '0.25s ease',
+            boxShadow: '0 4px 10px rgba(0,0,0,0.12)',
+          }}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = '#085560')}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = '#0A6E7C')}
         >
           Go to Login
         </Link>

@@ -1,248 +1,219 @@
-/* === MAIN PAGE & BACK BUTTON === */
-.gig-details-page {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 2rem;
-  animation: fadeIn 0.5s ease-out;
+/* GigDetails.css - Minimalist Vertical Scroll Design */
+
+/* === GLOBAL CONTAINER & TYPOGRAPHY === */
+.gig-page-minimal {
+  max-width: 1270px;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
+  font-family: Arial, sans-serif;
+  margin-top: 10px;
+  color: #0A6E7C;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.back-btn {
+/* === BACK BUTTON === */
+.back-btn-minimal {
   background: none;
   border: none;
   font-weight: 600;
   color: #0A6E7C;
   cursor: pointer;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   font-size: 1rem;
-}
-
-/* === NEW BEAUTIFUL PAGE HEADER === */
-.gig-page-header {
-  background: linear-gradient(135deg, #1B263B 0%, #0A6E7C 100%);
-  color: #fff;
-  padding: 3rem 2.5rem;
-  border-radius: 16px;
-  margin-bottom: 2.5rem;
-}
-
-.header-content h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin: 0.5rem 0;
-}
-
-.client-info {
-  font-size: 1.1rem;
-  opacity: 0.8;
-}
-.client-info a {
-  color: #fff;
-  font-weight: 600;
-  text-decoration: none;
-}
-.client-info a:hover {
-  text-decoration: underline;
-}
-
-/* === TWO-COLUMN LAYOUT & STICKY SIDEBAR === */
-.gig-details-body {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 3rem;
-  align-items: flex-start;
-}
-
-.sidebar {
-  position: relative;
-}
-
-.sticky-sidebar {
-  position: sticky;
-  top: 2rem; /* The sidebar will stick 2rem from the top */
+  padding: 0;
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* === MAIN CONTENT (LEFT) === */
-.main-content .section {
-  margin-bottom: 2.5rem;
-}
-.main-content .section h2 {
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #343a40;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid #e9ecef;
-}
-.main-content .section p {
-  line-height: 1.8;
-  color: #495057;
-  font-size: 1.1rem;
-}
-
-.skills-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-.skill-tag {
-  background-color: #e9ecef;
-  color: #495057;
-  padding: 8px 16px;
-  border-radius: 50px;
-  font-weight: 500;
-  font-size: 0.9rem;
-  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-/* === SIDEBAR CARDS (RIGHT) === */
-.sidebar-card {
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 1.5rem;
-  border: 1px solid #e9ecef;
+/* === HEADER (Dark Bar) === */
+.header-minimal {
+  background-color:#074249;
+  color: #fff;
+  padding: 2rem 2.5rem;
+  margin-bottom: 2.5rem;
+  border-radius: 4px;
 }
 
-.details-card h3, .action-card h3 {
-  font-size: 1.2rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-.details-card ul {
-  list-style: none;
-  padding: 0;
+.header-minimal h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
 }
-.details-card li {
+
+.header-meta {
+  font-size: 0.95rem;
+  opacity: 0.8;
+  margin-top: 0.5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
 }
-.details-card svg {
-  color: #0A6E7C;
-  font-size: 1.5rem;
-}
-.details-card span {
-  display: block;
-  font-size: 0.9rem;
-  color: #6c757d;
-}
-.details-card strong {
-  font-size: 1.1rem;
+
+.header-meta a {
+  color: #fff;
   font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.5);
 }
 
-/* === STATUS BADGES === */
-.status-badge {
-  display: inline-block;
-  padding: 6px 14px;
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  text-transform: capitalize;
+/* === CONTENT SECTIONS === */
+.content-section {
+  padding: 0 0 2.5rem 0;
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 2.5rem;
 }
-.status-badge.status-open { background-color: rgba(33, 150, 83, 0.1); color: #219653; }
-.status-badge.status-in-progress { background-color: rgba(242, 153, 74, 0.1); color: #f2994a; }
-.status-badge.status-completed, .status-badge.status-paid { background-color: rgba(45, 156, 219, 0.1); color: #2d9cdb; }
 
-/* === PROPOSAL FORM === */
-.proposal-form input, .proposal-form textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ced4da;
-  border-radius: 8px;
+.content-section h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1B263B;
   margin-bottom: 1rem;
-  font-family: inherit;
+  border-left: 3px solid #0A6E7C;
+  padding-left: 10px;
+}
+
+.content-section p {
+  line-height: 1.6;
+  color: #495057;
   font-size: 1rem;
 }
-.btn-primary {
+
+/* === DETAIL BLOCKS === */
+.detail-block-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.detail-item {
+  flex-basis: 30%;
+  padding: 15px;
+  border: 10px solid #e9ecef;
+  border-radius: 4px;
+}
+
+.detail-item strong {
+  display: block;
+  font-size: 1.2rem;
+  color: #1B263B;
+  font-weight: 700;
+}
+
+.detail-item span {
+  font-size: 0.8rem;
+  color: #6c757d;
+  text-transform: uppercase;
+}
+
+/* === SKILLS === */
+.skills-list-minimal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.skill-tag-minimal {
+  background-color: #e9ecef;
+  color: #1B263B;
+  padding: 6px 12px;
+  border-radius: 2px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* === PROPOSAL FORM === */
+.proposal-form-minimal input,
+.proposal-form-minimal textarea {
   width: 100%;
-  padding: 14px;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border: 1px solid #ced4da;
+  font-family: inherit;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.btn-primary-minimal {
+  width: 100%;
+  padding: 12px;
   border: none;
-  border-radius: 8px;
   background-color: #0A6E7C;
   color: #fff;
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s;
 }
-.btn-primary:hover {
+
+.btn-primary-minimal:hover {
   background-color: #085560;
 }
 
-/* === FEEDBACK BOX === */
-.feedback-box { text-align: center; }
-.feedback-box svg { font-size: 2.5rem; margin-bottom: 1rem; }
-.feedback-box.applied svg { color: #28a745; }
-.feedback-box.hired svg { color: #0A6E7C; }
+/* === STATUS BADGES === */
+.status-badge-minimal {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 2px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  margin-left: 10px;
+}
 
-/* === PROPOSAL LIST (CLIENT) === */
-.proposal-card {
-  background-color: #fff;
-  border-radius: 12px;
+.status-badge-minimal.status-open { background-color: #28a745; color: #fff; }
+.status-badge-minimal.status-in-progress { background-color: #ffc107; color: #333; }
+.status-badge-minimal.status-completed { background-color: #007bff; color: #fff; }
+
+/* === PROPOSAL LIST CARDS === */
+.proposal-card-minimal {
+  border: 1px solid #e9ecef;
   padding: 1.5rem;
   margin-bottom: 1rem;
-  border: 1px solid #e9ecef;
+  border-left: 5px solid #1B263B;
 }
-.proposal-header {
+
+.proposal-header-minimal {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.75rem;
   margin-bottom: 1rem;
 }
-.freelancer-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-.freelancer-avatar-placeholder {
-  width: 40px;
-  height: 40px;
-  color: #adb5bd;
-}
-.freelancer-link {
-  flex-grow: 1;
-  font-weight: 600;
+
+.freelancer-link-minimal {
+  font-weight: 700;
   color: #0A6E7C;
   text-decoration: none;
 }
-.proposal-bid {
-  font-weight: 700;
-  font-size: 1.2rem;
-}
-.proposal-actions {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-.btn-accept, .btn-reject {
-  flex: 1; padding: 10px; border-radius: 8px; border: none; color: #fff;
-  font-weight: 600; cursor: pointer; display: flex; align-items: center;
-  justify-content: center; gap: 0.5rem; transition: opacity 0.3s;
-}
-.btn-accept { background-color: #28a745; }
-.btn-reject { background-color: #dc3545; }
 
-/* === RESPONSIVE === */
-@media (max-width: 992px) {
-  .gig-details-body {
-    grid-template-columns: 1fr;
-  }
-  .sticky-sidebar {
-    position: static; /* Unstick the sidebar on smaller screens */
-  }
+.proposal-bid-minimal {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1B263B;
+}
+
+.btn-action-minimal {
+  padding: 6px 12px;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.btn-action-minimal.accept { background-color: #28a745; color: white; }
+.btn-action-minimal.reject { background-color: #dc3545; color: white; }
+
+/* === NEW: STATUS TEXT AFTER ACTION === */
+.accepted-text {
+  color: #28a745;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.rejected-text {
+  color: #dc3545;
+  font-weight: 700;
+  margin-top: 10px;
 }

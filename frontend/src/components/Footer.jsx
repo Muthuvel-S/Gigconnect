@@ -22,7 +22,7 @@ const Footer = () => {
           <h3>Contact Us</h3>
           <p>Email: support@gigconnect.com</p>
           <p>Phone: +91 123 456 7890</p>
-          <p>Address: 123 Freelancer Street, Mumbai, India</p>
+          <p>coimbatore</p>
         </div>
 
         {/* Policies Section */}
