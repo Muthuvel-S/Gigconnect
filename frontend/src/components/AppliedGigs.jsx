@@ -140,7 +140,7 @@ const AppliedGigs = () => {
   return (
     <div className="applied-gigs-container">
       <header className="page-header">
-        <h1>My Applications</h1>
+        <h1>Applications</h1>
         <p>Track the status of all your submitted proposals.</p>
       </header>
 

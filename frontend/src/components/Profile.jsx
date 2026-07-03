@@ -361,6 +361,10 @@ const Profile = () => {
   if (!userData) return <div className="loading-indicator">Loading profile...</div>;
 
   return (
+    
+
+    
+    
     <div className="profile-page-container">
       <div className={`profile-layout ${userData.role === "client" ? "client-layout" : ""}`}>
         <aside className="profile-sidebar">
